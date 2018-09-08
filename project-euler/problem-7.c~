@@ -1,0 +1,21 @@
+# include <stdio.h>
+
+
+int main(void) {
+  int a, b, c, i;
+
+  for(i = 1; i <= 20; i++) {
+
+    if (i % 2 == 0) {
+      a = i;
+
+    }
+
+    printf("i: %7d, a: %7d\n", i, a);
+
+
+
+  }
+
+  return 0;
+}
