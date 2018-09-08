@@ -7,7 +7,6 @@ int main(void) {
     a += i * i;
     b += i;
 
-    
     printf("i: %5d, a: %5d, b: %5d\n", i, a, b);
 
   }
