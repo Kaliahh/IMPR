@@ -1,0 +1,25 @@
+# include <stdio.h>
+
+
+int main(void) {
+  int a, b, c, i;
+
+  for (i = 1; i < 3000; i++) {
+
+    if (i % 5 == 0 &&
+	i % 6 == 0 &&
+	i % 7 == 0 &&
+	i % 8 == 0 &&
+	i % 9 == 0 &&
+	i % 10 == 0 &&) {
+      print("%d\n", i);
+
+    }
+
+
+  }
+  
+
+
+  return 0;
+}

@@ -1,0 +1,10 @@
+#include <stdio.h>
+
+int main(void) {
+  int a = 2, b = 13, c = 6;
+  int r = a - b % 3 * c + b / 7; 
+
+  printf("r: %d\n", r);
+  
+  return 0;
+}
