@@ -1,0 +1,13 @@
+# include <stdio.h>
+
+int main(void) {
+
+  int s = 0;
+
+  printf("Indtast et antal sekunder: \n");
+  scanf("%d", &s);
+  printf("%d\n", s);
+  
+  
+  return 0;
+}
