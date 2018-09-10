@@ -1,0 +1,16 @@
+# include <stdio.h>
+
+int main(void) {
+
+  int a;
+  char u;
+  
+  printf("Indtast antal og enhed: ");
+  scanf("%d %ch\n", &a, &u);
+
+
+  printf"%d og %s\n", a, u);
+  return 0;
+ 
+
+}

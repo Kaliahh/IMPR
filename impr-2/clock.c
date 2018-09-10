@@ -8,12 +8,12 @@ int main(void) {
   //printf("Indtast et antal sekunder: ");
   //scanf("%d", &t);
 
-  while (a < 86400) {
+  while (a < 1000000) {
 
     
     
     a++;
-    sleep(1);
+    //sleep(1);
     printf("%d\n", a);
   }
   
