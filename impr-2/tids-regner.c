@@ -1,6 +1,6 @@
 // Ane Søgaard Jørgensen
 // 09/09-2018
-// Afleveringsopgave i IMPR til den 17/09-2018 12:00.
+// Afleveringsopgave i IMPR til den 17/09-2018 12:00
 // Link til opgave: https://goo.gl/68PJhj
 
 
@@ -14,7 +14,7 @@ int main(void) {
   scanf("%d", &t); // Input må ikke være højere end 2,147,483,647
 
 
-  /* I de næste 5 linjer kode regnes de forskellige tidsenheder ud.
+  /* I de næste 5 linjer kode regnes de forskellige tidsenheder ud.x
      Den første er sekunder. Man kan teste det ved, ved at sige 61 % 60 = 1 og 59 % 60 = 59.
 
      Den næste er minutter. Der er 3600 sekunder i én time. 3600 / 60 = 60 minutter.
