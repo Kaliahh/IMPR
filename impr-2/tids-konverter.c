@@ -5,7 +5,7 @@
 int main(void) {
 
 
-  float t = 0, sek = 0, min = 0, timer = 0, dage = 0, uger = 0;
+  double t = 0, sek = 0, min = 0, timer = 0, dage = 0, uger = 0;
   char u[100];
 
 
