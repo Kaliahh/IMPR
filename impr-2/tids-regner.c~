@@ -1,21 +1,57 @@
-// Ane Søgaard Jørgensen
-// 09/09-2018
-// Afleveringsopgave i IMPR til den 17/09-2018 12:00
-// Link til opgave: https://goo.gl/68PJhj
-
+/* Ane Søgaard Jørgensen
+ * 09/09-2018
+ * Afleveringsopgave i IMPR til den 17/09-2018 12:00
+ * Underviser: Kurt Nørmark
+ * Link til opgave: https://goo.gl/68PJhj
+ *
+ * Konverterer et input i sekunder til uger, dage, timer, minutter og sekunder.
+ */
 
 # include <stdio.h>
 
 int main(void) {
 
-  int t = 0, sek = 0, min = 0, timer = 0, dage = 0, uger = 0;
+  /* Initialiserer variablerne */
+  int t = 0,
+    sek = 0,
+    min = 0,
+    timer = 0,
+    dage = 0,
+    uger = 0;
 
+  
+  /* Prompter brugeren til at indtaste et antal sekunder */
   printf("Indtast et antal sekunder: ");
-  scanf("%d", &t); // Input må ikke være højere end 2,147,483,647
+  scanf("%d", &t); 
+
+  
+  /* Konverterer input til uger, dage, timer, minutter og sekunder. Forklaring efter main funktion */
+  sek = t % 60;
+  min = (t % 3600) / 60;
+  timer = (t % 86400) / 3600;
+  dage = (t % 604800) / 86400;
+  uger = t / 604800;
+
+  
+  /* Udskriver det konverterede input til terminalen */
+  printf("%d uge(r), %2d dag(e), %2d time(r), %2d minut(ter) og %2d sekund(er)\n",
+	 uger,
+	 dage,
+	 timer,
+	 min,
+	 sek);
+  
+  
+  return 0;
+}
 
 
-  /* I de næste 5 linjer kode regnes de forskellige tidsenheder ud.x
-     Den første er sekunder. Man kan teste det ved, ved at sige 61 % 60 = 1 og 59 % 60 = 59.
+
+
+
+/*   Forklaring til konvertering:
+
+     Den første er sekunder. Man kan teste det ved at sige 61 % 60 = 1, og 59 % 60 = 59.
 
      Den næste er minutter. Der er 3600 sekunder i én time. 3600 / 60 = 60 minutter.
      Så hvis t = 60. 60 % 3600 = 60. 60 / 60 = 1.
@@ -27,24 +63,8 @@ int main(void) {
      osv.
 
      For både timer og dage, gælder det samme princip. For timer er det bare i forhold til dage,
-     og for dage er det i forhold til uger, og selvfølgelig med 23 timer og 6 dage som det højeste de kan vise.
+     og for dage er det i forhold til uger, med 23 timer og 6 dage som det højeste de kan vise.
 
      Uger er lidt speciel, fordi den skal ikke resettes (medmindre man gerne vil have år på).
-     Den tælder bare op som den skal. */
-  
-  sek = t % 60;
-  min = (t % 3600) / 60;
-  timer = (t % 86400) / 3600;
-  dage = (t % 604800) / 86400;
-  uger = t / 604800;
-  
-  
-  printf("%d uge(r), %2d dag(e), %2d time(r), %2d minut(ter) og %2d sekund(er)\n",
-	 uger,
-	 dage,
-	 timer,
-	 min,
-	 sek); // Her printes tiden ud, i det ønskede format
-  
-  return 0;
-}
+     Den tæller bare op som den skal. 
+*/

@@ -1,0 +1,10 @@
+# include <stdio.h>
+
+int main(void) {
+
+  double begin = 0.0, end = 0.0, fare = 0.0;
+
+  printf("\nTAXI FARE CALCULATOR\n\n");
+
+  return 0;
+}

@@ -1,13 +1,18 @@
-// Ane Søgaard Jørgensen
-// 09/09-2018
-// Afleveringsopgave i IMPR til den 17/09-2018 12:00
-// Underviser: Kurt Nørmark
-// Link til opgave: https://goo.gl/68PJhj
-
-// Konverterer et input i sekunder til uger, dage, timer, minutter og sekunder.
-
+/* Ane Søgaard Jørgensen
+ * 09/09-2018
+ * Afleveringsopgave i IMPR til den 17/09-2018 12:00
+ * Underviser: Kurt Nørmark
+ * Link til opgave: https://goo.gl/68PJhj
+ *
+ * Konverterer et input i sekunder til uger, dage, timer, minutter og sekunder.
+ */
 
 # include <stdio.h>
+
+# define SEK_I_MINUT 60
+# define SEK_I_TIME 3600
+# define SEK_I_DAG 86400
+# define SEK_I_UGE 604800
 
 int main(void) {
 
@@ -27,10 +32,10 @@ int main(void) {
   
   /* Konverterer input til uger, dage, timer, minutter og sekunder. Forklaring efter main funktion */
   sek = t % 60;
-  min = (t % 3600) / 60;
-  timer = (t % 86400) / 3600;
-  dage = (t % 604800) / 86400;
-  uger = t / 604800;
+  min = (t % SEK_I_TIME) / SEK_I_MINUT;
+  timer = (t % SEK_I_DAG) / SEK_I_TIME;
+  dage = (t % SEK_I_UGE) / SEK_I_DAG;
+  uger = t / SEK_I_UGE;
 
   
   /* Udskriver det konverterede input til terminalen */

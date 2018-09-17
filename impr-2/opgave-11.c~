@@ -1,0 +1,15 @@
+# include <stdio.h>
+# include <stdlib.h>
+
+
+int main(void) {
+
+  int m = 0, n = 0;
+  int side1 = 0, side2 = 0, hypothenuse = 0;
+
+  printf("Input m and n: ");
+  scanf("%d %d", %m, %n);
+  x
+
+
+}

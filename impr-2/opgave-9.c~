@@ -1,0 +1,15 @@
+# include <stdio.h>
+# include <stdlib.h>
+
+
+int main(void) {
+
+  double length = 0.0, width = 0.0;
+
+  printf("Input a length and a width: ");
+  scanf("%lf%lf", &length, &width);
+
+  
+  
+  return 0;
+}
