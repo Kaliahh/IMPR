@@ -1,0 +1,13 @@
+# include <stdio.h>
+
+int main (void) {
+
+  double r = 0, x = 0, y = 0;
+
+  printf("Input a radius: ");
+  scanf("%lf", &r);
+  printf("\nInput a point: (x,y)");
+  scanf("(%lf,%lf)", &x, &y);
+
+  return 0;
+}
