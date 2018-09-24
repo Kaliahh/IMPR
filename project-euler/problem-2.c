@@ -4,7 +4,7 @@ int main(void) {
 
   int a = 0, b = 1, sum, i;
 
-  for (i = 0; a < 4000000; i++) { //Så længe a er mindre end, køres koden
+  for (i = 0; a < 1e9; i++) { //Så længe a er mindre end, køres koden
 
     a = a + b;  //I disse to linjer lægges de to sidste udregninger sammen.
     b = a - b; 
