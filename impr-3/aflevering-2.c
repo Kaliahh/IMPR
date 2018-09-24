@@ -1,7 +1,9 @@
-// Ane Søgaard Jørgensen
-// 12/09-2018
-// Afleveringsopgave i IMPR til den ??/??-2018 ??:??
-// Link til opgave: ??
+/*
+ * Ane Søgaard Jørgensen
+ * 12/09-2018
+ * Afleveringsopgave i IMPR til den 28/09-2018 16:00
+ * Link til opgave: https://bit.ly/2PSykeE
+ */
 
 # include <stdio.h>
 # include <string.h>
@@ -14,9 +16,8 @@ int main(void) {
   int t = 0, sek = 0, min = 0, timer = 0;
 
   char timer_enhed[10] = "", min_enhed[10] = "", sek_enhed[10] = "";
-
-  /* char timer_str[10] = "", min_str[10] = "", sek_str[10] = ""; */
-
+  
+  /* Prompter brugeren for et antal sekunder */
   printf("Input antal sekunder: ");
   scanf("%d", &t);
 
@@ -25,52 +26,39 @@ int main(void) {
   min = (t % 3600) / 60;
   timer = t / 3600;
 
-
   /* Finder enhederne for antal timer, minutter og sekunder */
-  if (timer == 1) {
+  if (timer == 1)
     strcpy(timer_enhed, "time");
-  }
 
-  else if (timer > 1) {
+  else if (timer > 1)
     strcpy(timer_enhed, "timer");
-  }
 
-  if (min == 1) {
+  if (min == 1)
     strcpy(min_enhed, "minut");
-  }
 
-  else if (min > 1 || t > SEK_I_MINUT) {
+  else if (min > 1 || t > SEK_I_MINUT)
     strcpy(min_enhed, "minutter");
-  }
 
-  if (sek == 1) {
+  if (sek == 1)
     strcpy(sek_enhed, "sekund");
-  }
 
-  else if (sek > 1 || t > 1) {
+  else if (sek > 1 || t > 1)
     strcpy(sek_enhed, "sekunder");
-  }
-
-  /* Printer resultatet alt efter antallet af de forskellige tal */
-
-  if (t == 0) {
-    printf("Programmet har brug for input for at virke!\n");
-  }
+  
+  /* Printer resultatet, alt efter hvor stort inputtet er */
 
   if (t > 0) {
-    if (t >= SEK_I_MINUT) {
-      if (t >= SEK_I_TIME) {
-	printf("%d %s, %d %s, %d %s\n", timer, timer_enhed, min, min_enhed, sek, sek_enhed);
-      }
-      else if (t < SEK_I_TIME) {
-	printf("%d %s, %d %s\n", min, min_enhed, sek, sek_enhed);
-      }
-    }
-    else if (t < SEK_I_MINUT) {
+    if (t >= SEK_I_MINUT && t >= SEK_I_TIME)
+      printf("%d %s, %d %s, %d %s\n", timer, timer_enhed, min, min_enhed, sek, sek_enhed);
+      
+    else if (t < SEK_I_TIME && t >= SEK_I_MINUT)
+      printf("%d %s, %d %s\n", min, min_enhed, sek, sek_enhed);
+      
+    else if (t < SEK_I_MINUT)
       printf("%d %s\n", sek, sek_enhed);
-    }
   }
-  
-  
+  else
+    printf("Hvad troede du der ville ske?\n");
+
   return 0;
 }
