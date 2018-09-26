@@ -13,7 +13,7 @@ int write(void) {
   scanf("%s", stat);
 
   fP = fopen("file.txt", "w");
-  fprintf(fP, "%s", stat);
+  fprintf(fP, "{%s}", stat);
 
   fclose(fP);
 
@@ -21,15 +21,31 @@ int write(void) {
 
 int read(void) {
 
+  char str[50];
+
   FILE * fP;
 
-
+  printf("Printing file: \n\n");
+  fgets(str, 50, fP);
+  
 
   fclose(fP);
 
 }
 
 int append(void) {
+
+  char stat[50];
+  
+  FILE * fP;
+
+  printf("Input your statement: ");
+  scanf("%s", stat);
+
+  fP = fopen("file.txt", "a");
+  fprintf(fP, "{%s}", stat);
+
+  fclose(fP);
 
 }
 

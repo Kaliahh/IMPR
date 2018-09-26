@@ -22,43 +22,39 @@ int main(void) {
   scanf("%d", &t);
 
   /* Udregner sekunder, minutter og timer fra inputtet */
-  sek = t % 60;
-  min = (t % 3600) / 60;
-  timer = t / 3600;
+  sek = t % SEK_I_MINUT;
+  min = (t % SEK_I_TIME) / SEK_I_MINUT;
+  timer = t / SEK_I_TIME;
 
   /* Finder enhederne for antal timer, minutter og sekunder */
-  if (timer == 1)
-    strcpy(timer_enhed, "time");
-
-  else if (timer > 1)
-    strcpy(timer_enhed, "timer");
-
-  if (min == 1)
-    strcpy(min_enhed, "minut");
-
-  else if (min > 1 || t > SEK_I_MINUT)
-    strcpy(min_enhed, "minutter");
-
-  if (sek == 1)
-    strcpy(sek_enhed, "sekund");
-
-  else if (sek > 1 || t > 1)
-    strcpy(sek_enhed, "sekunder");
+  (timer == 1) ? strcpy(timer_enhed, "time") : strcpy(timer_enhed, "timer");
+  (min == 1) ? strcpy(min_enhed, "minut") : strcpy(min_enhed, "minutter");
+  (sek == 1) ? strcpy(sek_enhed, "sekund") : strcpy(sek_enhed, "sekunder");
   
-  /* Printer resultatet, alt efter hvor stort inputtet er */
+  /* Printer resultatet, baseret på kombinationen af sek, min og timer */
+  if (sek != 0 && min != 0 && timer != 0)
+    printf("%d %s, %d %s og %d %s\n", timer, timer_enhed, min, min_enhed, sek, sek_enhed);
+  
+  else if (sek == 0 && min != 0 && timer != 0)
+    printf("%d %s og %d %s\n", timer, timer_enhed, min, min_enhed);
+  
+  else if (sek != 0 && min == 0 && timer != 0)
+    printf("%d %s og %d %s\n", timer, timer_enhed, sek, sek_enhed);
+  
+  else if (sek != 0 && min != 0 && timer == 0)
+    printf("%d %s og %d %s\n", min, min_enhed, sek, sek_enhed);
 
-  if (t > 0) {
-    if (t >= SEK_I_MINUT && t >= SEK_I_TIME)
-      printf("%d %s, %d %s, %d %s\n", timer, timer_enhed, min, min_enhed, sek, sek_enhed);
-      
-    else if (t < SEK_I_TIME && t >= SEK_I_MINUT)
-      printf("%d %s, %d %s\n", min, min_enhed, sek, sek_enhed);
-      
-    else if (t < SEK_I_MINUT)
-      printf("%d %s\n", sek, sek_enhed);
-  }
+  else if (sek != 0 && min == 0 && timer == 0)
+    printf("%d %s\n", sek, sek_enhed);
+
+  else if (sek == 0 && min != 0 && timer == 0)
+    printf("%d %s\n", min, min_enhed);
+
+  else if (sek == 0 && min == 0 && timer != 0)
+    printf("%d %s\n", timer, timer_enhed);
+
   else
-    printf("Hvad troede du der ville ske?\n");
-
+    printf("Invalid input\n");
+    
   return 0;
 }
