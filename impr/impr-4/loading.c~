@@ -1,0 +1,13 @@
+# include <stdio.h>
+# include <unistd.h>
+
+int main(void) {
+  int a = 100000, i;
+  
+  for (i = 1; i <= a; i++){
+    printf("|");
+    sleep(0.2);
+    printf(
+  }
+
+}
