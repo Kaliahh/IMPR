@@ -27,49 +27,34 @@ int main(void) {
   timer = t / SEK_I_TIME;
 
   /* Finder enhederne for antal timer, minutter og sekunder */
-  if (timer == 1)
-    strcpy(timer_enhed, "time");
-
-  else if (timer > 1)
-    strcpy(timer_enhed, "timer");
-
-  if (min == 1)
-    strcpy(min_enhed, "minut");
-
-  else if (min > 1 || t > SEK_I_MINUT)
-    strcpy(min_enhed, "minutter");
-
-  if (sek == 1)
-    strcpy(sek_enhed, "sekund");
-
-  else if (sek > 1 || t > 1)
-    strcpy(sek_enhed, "sekunder");
+  (timer == 1) ? strcpy(timer_enhed, "time") : strcpy(timer_enhed, "timer");
+  (min == 1) ? strcpy(min_enhed, "minut") : strcpy(min_enhed, "minutter");
+  (sek == 1) ? strcpy(sek_enhed, "sekund") : strcpy(sek_enhed, "sekunder");
   
-  /* Printer resultatet, alt efter hvor stort inputtet er */
-  if (sek != 0 && min != 0 && timer != 0)      //1 1 1
+  /* Printer resultatet, baseret på kombinationen af sek, min og timer */
+  if (sek != 0 && min != 0 && timer != 0)
     printf("%d %s, %d %s og %d %s\n", timer, timer_enhed, min, min_enhed, sek, sek_enhed);
   
-  else if (sek == 0 && min != 0 && timer != 0) //0 1 1
+  else if (sek == 0 && min != 0 && timer != 0)
     printf("%d %s og %d %s\n", timer, timer_enhed, min, min_enhed);
   
-  else if (sek != 0 && min == 0 && timer != 0) //1 0 1
+  else if (sek != 0 && min == 0 && timer != 0)
     printf("%d %s og %d %s\n", timer, timer_enhed, sek, sek_enhed);
   
-  else if (sek != 0 && min != 0 && timer == 0) //1 1 0
+  else if (sek != 0 && min != 0 && timer == 0)
     printf("%d %s og %d %s\n", min, min_enhed, sek, sek_enhed);
 
-  else if (sek != 0 && min == 0 && timer == 0) //1 0 0
+  else if (sek != 0 && min == 0 && timer == 0)
     printf("%d %s\n", sek, sek_enhed);
 
-  else if (sek == 0 && min != 0 && timer == 0) //0 1 0
+  else if (sek == 0 && min != 0 && timer == 0)
     printf("%d %s\n", min, min_enhed);
 
-  else if (sek == 0 && min == 0 && timer != 0) //0 0 1
+  else if (sek == 0 && min == 0 && timer != 0)
     printf("%d %s\n", timer, timer_enhed);
 
   else
     printf("Invalid input\n");
     
-
   return 0;
 }
