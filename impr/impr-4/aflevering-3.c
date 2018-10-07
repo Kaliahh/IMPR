@@ -75,12 +75,18 @@ int linear(int a, int b) {
 
     /*Viser step og GCD */
     printf("i: %7d| GCD: %7d|\n", i, rem);
+
+    /* GCD kan ikke være højere end det laveste input, så der breakes der*/
+    /* Dette afhjælper regnetiden, hvis der gives et meget højt tal, og et meget lavt tal */
+    if (a == i || b == i)
+      break;
   }
 
   /* Hvis der ingen fælles devisor findes, er GCD 1 */
   if (rem == 0)
     rem = 1;
 
+  
   return rem;
 }
 
