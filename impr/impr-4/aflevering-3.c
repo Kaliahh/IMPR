@@ -1,5 +1,5 @@
-/* 
- * Ane Søgaard Jørgensen
+/*
+ * Ane Sï¿½gaard Jï¿½rgensen
  * 05/10-2018
  * Afleveringsopgave i IMPR til den 12/10-2018 kl. 18:00
  * Link til opgave: https://bit.ly/2yijF5w
@@ -14,7 +14,7 @@ int euclid(int, int);
 
 
 int main(void) {
-  
+
   int a = 1, b = 1, GCD;
   char choice[1];
 
@@ -33,7 +33,7 @@ int main(void) {
     main();
   }
 
-  /* Prompter brugeren til at vælge en logaritme, eller afslutte */
+  /* Prompter brugeren til at vï¿½lge en logaritme, eller afslutte */
   printf("\nVil du bruge en linear search, euclids algoritme eller afslutte? (l/e/a) ");
   scanf(" %c", choice);
 
@@ -43,7 +43,7 @@ int main(void) {
   else if (strcmp(choice, "e") == 0)
     GCD = euclid(a,b);
 
-  else if (strcmp(choice, "q") == 0)
+  else if (strcmp(choice, "a") == 0)
     return 0;
 
   /* Printer GCD */
@@ -62,54 +62,36 @@ int main(void) {
   return 0;
 }
 
-
 int linear(int a, int b) {
 
-  int i, j, rem = 10000;
-  
-  /* Finder den største fælles divisor */
-  for (i = 1; i <= a || i <= b; i++) {
-      
+  int i, j, rem = 1, lille;
+
+  /* Udregner hvilket input der er mindst */
+  lille = (a <= b) ? a : b;
+
+  /* Finder den stï¿½rste fï¿½lles divisor */
+  for (i = lille; i > 0; i--)
     if (a % i == 0 && b % i == 0)
-      rem = (i > rem) ? rem = i : printf("\n");
+      if (i > rem) {
+       rem = i;
+      }
 
-    /*Viser step og GCD */
-    printf("i: %7d| GCD: %7d|\n", i, rem);
-
-    /* GCD kan ikke være højere end det laveste input, så der breakes der*/
-    /* Dette afhjælper regnetiden, hvis der gives et meget højt tal, og et meget lavt tal */
-    if (a == i || b == i)
-      break;
-  }
-
-  /* Hvis der ingen fælles devisor findes, er GCD 1 */
-  if (rem == 0)
-    rem = 1;
-
-  
   return rem;
 }
-
 
 int euclid(int a, int b) {
 
   int stor, lille, rem;
-    
+
   /* Sorterer de indtastede tal */
   lille = (a <= b) ? a : b;
   stor = (a <= b) ? b : a;
 
-  /* Starter talkæden */
-  printf("\n%d %d, ", stor, lille);
-    
-  /* Finder den største fælles devisor */
+  /* Finder den stï¿½rste fï¿½lles devisor */
   while (lille > 0) {
     rem = stor % lille;
     stor = lille;
     lille = rem;
-
-    /* Printer til talkæden */
-    printf("%d, ", lille);
   }
 
   return stor;
