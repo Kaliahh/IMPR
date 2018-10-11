@@ -1,31 +1,52 @@
 # include <stdio.h>
 
 int spaces(int);
-int top(int);
-int bottom(int);
+int sekskant(int);
+int kvadrat(int);
 
 int main(void) {
+  int i, j, a = 0, input;
 
-  int max;
-
+  /* Prompter brugeren for input */
   printf("Input an integer: ");
-  scanf("%d", &max);
+  scanf("%d", &input);
+
+  /* Beregner øverste halvdel af romben */
+  for (i = 1; i <= input; i++) {
+    spaces(input - a);
+
+    for (j = 1; j <= a; j++) {
+      printf("0 ");
+    }
+    a++;
+
+    //sekskant(input);
+    //kvadrat(input);
+
+    printf("\n");
+  }
+
+  /* Beregner nederste halvdel af romben */
+  for (i = 1; i <= input; i++) {
+    spaces(input - a);
+
+    for (j = 1; j <= a; j++) {
+      printf("0 ");
+    }
+    a--;
+
+    //sekskant(input);
+    //kvadrat(input);
+
+    printf("\n");
+  }
   printf("\n");
-
-  top(max);
-  bottom(max);
-
-  printf("\n");
-
-
-  spaces(max);
 
   return 0;
 }
 
-
+/* Laver en bestem antal mellemrum */
 int spaces(int a) {
-
   int i;
 
   for (i = 1; i <= a; i++) {
@@ -33,32 +54,20 @@ int spaces(int a) {
   }
 }
 
+/* Sekskant illusion */
+int sekskant(int a) {
+  int i;
 
-int top(int max) {
-
-  int k, l;
-
-  for (k = 0; k <= max - 1; k++) {
-    for (l = 0; l <= k; l++) {
-      printf("%d ", l);
-    }
-    printf("\\");
-    printf("\n");
+  for (i = 1; i <= a; i++) {
+    printf("0 ");
   }
 }
 
-int bottom(int max) {
+/* Firkant illusion */
+int kvadrat(int a) {
+  int i;
 
-  int i, j;
-
-  for (i = 0; i <= max; i++) {
-    for (j = 0; j <= max - i; j++) {
-      printf("%d ", j);
-      if (j == max)
-        printf(">");
-    }
-    if (j != max + 1)
-      printf("/");
-    printf("\n");
+  for (i = 1; i <= a + a / 4; i++) {
+    printf(" _");
   }
 }
