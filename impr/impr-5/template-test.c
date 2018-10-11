@@ -1,6 +1,8 @@
-/* Navn: Ane Søgaard Jørgensen
+//Skriv start 
+
+/* Ane Søgaard Jørgensen
  * Dato: 11/10-2018
- * Beskrivelse: Dette er en test
+ * Beskrivelse: Noget
  */
 
 # include <stdio.h>
