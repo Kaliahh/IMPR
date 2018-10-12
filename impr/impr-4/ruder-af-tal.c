@@ -1,23 +1,34 @@
 # include <stdio.h>
 
+
+int rombe(int);
 int spaces(int);
 int sekskant(int);
 int kvadrat_a(int);
 int kvadrat_b(int);
 
 int main(void) {
-  int i, j, a = 0, input;
+  int input;
 
   /* Prompter brugeren for input */
   printf("Input an integer: ");
   scanf("%d", &input);
 
+  rombe(input);
+
+  return 0;
+}
+
+int rombe(int input) {
+
+  int a = 0;
+
   /* Beregner øverste halvdel af romben */
-  for (i = 1; i <= input; i++) {
+  for (int i = 1; i <= input; i++) {
     spaces(input - a);
 
-    for (j = 1; j <= a; j++) {
-      printf("0   ");
+    for (int j = 1; j <= a; j++) {
+      printf("0 ");
     }
     a++;
 
@@ -28,11 +39,11 @@ int main(void) {
   }
 
   /* Beregner nederste halvdel af romben */
-  for (i = 1; i <= input; i++) {
+  for (int i = 1; i <= input; i++) {
     spaces(input - a);
 
-    for (j = 1; j <= a; j++) {
-      printf("0   ");
+    for (int j = 1; j <= a; j++) {
+      printf("0 ");
     }
     a--;
 
@@ -43,8 +54,10 @@ int main(void) {
   }
   printf("\n");
 
-  return 0;
 }
+
+
+
 
 /* Laver et bestemt antal mellemrum */
 int spaces(int a) {
