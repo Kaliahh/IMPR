@@ -1,18 +1,14 @@
-#include <stdio.h>
-#include <stdlib.h>
+/* Navn: Ane Søgaard Jørgensen
+ * Dato: 12/10-2018
+ * Beskrivelse: Noget
+ */
+
+# include <stdio.h>
+# include <stdlib.h>
+# include <unistd.h>
+# include <string.h>
 
 int main(void) {
-  int a = 0, i = 1;
-
-  for (i = 1; i> 0; i++) {
-    a += i;
-    printf("%d\n", a);
-  }
-
-  
-  
+  printf("Noget");
   return 0;
 }
-
-
-
