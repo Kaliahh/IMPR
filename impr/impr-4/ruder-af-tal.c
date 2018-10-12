@@ -2,7 +2,8 @@
 
 int spaces(int);
 int sekskant(int);
-int kvadrat(int);
+int kvadrat_a(int);
+int kvadrat_b(int);
 
 int main(void) {
   int i, j, a = 0, input;
@@ -16,12 +17,12 @@ int main(void) {
     spaces(input - a);
 
     for (j = 1; j <= a; j++) {
-      printf("0 ");
+      printf("0   ");
     }
     a++;
 
     //sekskant(input);
-    //kvadrat(input);
+    //kvadrat_a(input);
 
     printf("\n");
   }
@@ -31,12 +32,12 @@ int main(void) {
     spaces(input - a);
 
     for (j = 1; j <= a; j++) {
-      printf("0 ");
+      printf("0   ");
     }
     a--;
 
     //sekskant(input);
-    //kvadrat(input);
+    //kvadrat_b(input);
 
     printf("\n");
   }
@@ -45,7 +46,7 @@ int main(void) {
   return 0;
 }
 
-/* Laver en bestem antal mellemrum */
+/* Laver et bestemt antal mellemrum */
 int spaces(int a) {
   int i;
 
@@ -64,10 +65,18 @@ int sekskant(int a) {
 }
 
 /* Firkant illusion */
-int kvadrat(int a) {
+int kvadrat_a(int a) {
   int i;
 
   for (i = 1; i <= a + a / 4; i++) {
     printf(" _");
+  }
+}
+
+int kvadrat_b(int a) {
+  int i;
+
+  for (i = 1; i <= a + a / 4; i++) {
+    printf(" /");
   }
 }
