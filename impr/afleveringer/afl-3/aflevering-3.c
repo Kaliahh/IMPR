@@ -70,11 +70,13 @@ int linear(int a, int b) {
   lille = (a <= b) ? a : b;
 
   /* Finder den st�rste f�lles divisor */
-  for (i = lille; i > 0; i--)
-    if (a % i == 0 && b % i == 0)
+  for (i = lille; i > 0; i--) {
+    if (a % i == 0 && b % i == 0) {
       if (i > rem) {
        rem = i;
       }
+    }
+  }
 
   return rem;
 }
