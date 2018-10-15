@@ -19,7 +19,7 @@ int main(void) {
   char choice[2];
 
   /* Denne løkke sørger for at programmet kan køres igen og igen, uden at skulle lukke det */
-  while (a != 0 || b != 0 || c != 0) {
+  while (a != 0) {
 
     printf("- - - - - - - - - - - - - - - - - - - - - - - - - - - -\n");
     printf("Dette program finder roedderne til en andengradsligning\n");
@@ -29,9 +29,9 @@ int main(void) {
     printf("Indtast 3 tal, a, b og c: ");
     scanf("%lf%lf%lf", &a, &b, &c);
 
-    /* Checker om alle inputs er lig med 0, og stopper løkken hvis det er */
-    if (a == 0 && b == 0 && c == 0) {
-      printf("Ugyldigt indput\n");
+    /* Checker a er lig med 0, og stopper løkken hvis det er, ugyldigt input */
+    if (a == 0) {
+      printf("Ugyldigt input\n");
       return 0;
     }
 
