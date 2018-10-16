@@ -6,7 +6,7 @@
 # include <stdio.h>
 
 /* Prototype */
-void veksle(int, int *, int *, int *, int *);
+void change(int, int *, int *, int *, int *);
 
 int main(void) {
 
@@ -27,7 +27,7 @@ int main(void) {
     }
 
     /* Finder antallet af sedler */
-    veksle(input, &hundred, &halvtreds, &tyve, &ti);
+    change(input, &hundred, &halvtreds, &tyve, &ti);
 
     /* Printer sedlerne */
     printf("Hundred: %d, halvtreds: %d, tyve: %d, ti: %d\n\n", hundred, halvtreds, tyve, ti);
@@ -37,7 +37,7 @@ int main(void) {
 }
 
 /* Finder antallet af sedler, og sender resultatet tilbage til main funktionen */
-void veksle(int input, int *hundred, int *halvtreds, int *tyve, int *ti  ) {
+void change(int input, int *hundred, int *halvtreds, int *tyve, int *ti  ) {
 
   int rem;
 
