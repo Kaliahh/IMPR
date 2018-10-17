@@ -1,6 +1,6 @@
 /* Navn: Ane Søgaard Jørgensen
  * Dato: 15/10-2018
- * Beskrivelse: https://bit.ly/2CgJEhf
+ * Beskrivelse: Opg 6.3: https://bit.ly/2CgJEhf
  */
 
 # include <stdio.h>
@@ -26,7 +26,7 @@ int main(void) {
       return 0;
     }
 
-    /* Finder antallet af sedler */
+    /* Kalder change() med adresserne på variablerne */
     change(input, &hundred, &halvtreds, &tyve, &ti);
 
     /* Printer sedlerne */

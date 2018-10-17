@@ -1,6 +1,6 @@
 /* Navn: Ane Søgaard Jørgensen
  * Dato: 12/10-2018
- * Beskrivelse: En fil til at lave nye filer
+ * Beskrivelse: Et program der laver en mappe indeholdende to filer, med .c og .h extensions
  */
 
 int mkdir(char*);
