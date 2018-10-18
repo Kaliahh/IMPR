@@ -78,11 +78,8 @@ double trap(double a, double b, int n, double (*f)(double)) {
   /* Beregner længden af subintervallerne */
   h = (b - a) / n;
 
-  /* Beregner summen af trappezerne */
-  result = sum(a, b, h, *f);
-
   /* Beregner arealet */
-  area = (h / 2) * ((*f)(a) + (*f)(b) + (2 * result));
+  area = (h / 2) * ((*f)(a) + (*f)(b) + 2 * sum(a, b, h, *f));
 
   return area;
 }
