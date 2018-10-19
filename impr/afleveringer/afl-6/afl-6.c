@@ -1,4 +1,4 @@
-/* Navn: Ane Søgaard Jørgensen
+/* Navn: Ane Soegaard Joergensen
  * Dato: 17/10-2018
  * Beskrivelse: Opg. 17 side 334. Find arealet under en kurve.
  */
@@ -8,6 +8,7 @@
 
 /* Prototyper */
 double trap(double, double, int, double(*f)(double));
+double sub_height(double, double, int);
 double sum(double, double, double, double(*f)(double));
 double g(double);
 double h(double);
@@ -16,67 +17,72 @@ double h(double);
 int main(void) {
 
   double a, b, area;
-  int n, x = 10;
+  int n, SENTINEL = 0;
   char choice;
 
   /* Initierer pointer til en funktion */
   double (*fP)(double);
 
-  /* Prompter brugeren for hvilken funktion de vil køre */
-  printf("Which function do you want to run? (g/h): ");
-  scanf(" %c", &choice);
 
-  /* Checker hvilken funktion brugeren vil koere, og saetter pointeren til den funktion */
-  if (choice == 'g') {
-    printf("(Try a = 0, b = 3.14159)\n");
-    fP = &g;
-  }
+  /* Her starter loopet, saa programmet ikke stopper efter hver beregning af arealet */
+  while(SENTINEL != 1) {
 
-  else if (choice == 'h') {
-    printf("(Try a = -2, b = 2)\n");
-    fP = &h;
-  }
+    /* Prompter brugeren for hvilken funktion de vil koere */
+    printf("Which function do you want to run? (g/h): ");
+    scanf(" %c", &choice);
 
-  /* Hvis brugeren ikke inputter g eller h, er det en fejl */
-  else if (choice != 'g' || choice != 'h') {
-    printf("Invalid input\n");
-    return 0;
-  }
+    /* Checker hvilken funktion brugeren vil koere, og saetter pointeren til den funktion */
+    if (choice == 'g') {
+      printf("(Try a = 0, b = 3.14159)\n");
+      fP = &g;
+    }
 
-  /* Prompter brugeren for 2 tal, a og b, som er graenserne for integralet */
-  printf("\nInput 2 numbers, a and b, for the limits of the area: ");
-  scanf(" %lf%lf", &a, &b);
+    else if (choice == 'h') {
+      printf("(Try a = -2, b = 2)\n");
+      fP = &h;
+    }
 
-  /* Prompter brugeren for hvor mange subintervals der skal regnes med */
-  printf("\nInput subintervals (Higher inputs = more precise results): ");
-  scanf(" %d", &n);
+    /* Hvis brugeren ikke inputter g eller h, er det en fejl */
+    else if (choice != 'g' || choice != 'h') {
+      printf("Invalid input\n");
+      return 0;
+    }
 
-  /* Beregner arealet */
-  area = trap(a, b, n, *fP);
+    /* Prompter brugeren for 2 tal, a og b, som er graenserne for integralet */
+    printf("\nInput 2 numbers, a and b, for the limits of the area: ");
+    scanf(" %lf%lf", &a, &b);
 
-  /* Printer arealet */
-  printf("Area: %lf\n\n", area);
+    /* Prompter brugeren for hvor mange subintervals der skal regnes med */
+    printf("\nInput subintervals (Higher inputs = more precise results): ");
+    scanf(" %d", &n);
 
-  /* Beder brugeren vaelge mellem at afslutte, eller fortsætte */
-  printf("Do you want to quit? (y/n): ");
-  scanf(" %c", &choice);
+    /* Beregner arealet */
+    area = trap(a, b, n, *fP);
 
-  if (choice == 'n') {
-    printf("- - - - - - - - - - - - - - - - - - -\n");
-    main();
+    /* Printer arealet */
+    printf("Area: %lf\n\n", area);
+
+    /* Beder brugeren vaelge mellem at afslutte, eller fortsaette */
+    printf("Do you want to quit? (y/n): ");
+    scanf(" %c", &choice);
+
+    if (choice != 'n') {
+      printf("- - - - - - - - - - - - - - - - - - -\n");
+      SENTINEL = 1;
+    }
   }
 
   return 0;
 }
 
 /* Udregner arealet */
-/* T = (h / 2) * (f(a) + f(b) + 2 * (SUM f(x_i))) */
+/* A = (h / 2) * (f(a) + f(b) + 2 * (SUM f(x_i))) */
 double trap(double a, double b, int n, double (*f)(double)) {
 
-  double h, area, result = 0;
+  double h, area;
 
-  /* Beregner længden af subintervallerne */
-  h = (b - a) / n;
+  /* Beregner hoejden af subintervallerne med sub_height funktionen */
+  h = sub_height(a, b, n);
 
   /* Beregner arealet */
   area = (h / 2) * ((*f)(a) + (*f)(b) + 2 * sum(a, b, h, *f));
@@ -84,7 +90,17 @@ double trap(double a, double b, int n, double (*f)(double)) {
   return area;
 }
 
-/* Finder summen */
+/* Beregner hoejden af subintervallerne */
+double sub_height(double a, double b, int n) {
+
+  double h;
+
+  h = (b - a) / n;
+
+  return h;
+}
+
+/* Beregner summen */
 double sum(double a, double b, double h, double (*f)(double)) {
 
   double sum = 0;
