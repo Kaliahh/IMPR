@@ -93,11 +93,7 @@ double trap(double a, double b, int n, double (*f)(double)) {
 /* Beregner hoejden af subintervallerne */
 double sub_height(double a, double b, int n) {
 
-  double h;
-
-  h = (b - a) / n;
-
-  return h;
+  return (b - a) / n;
 }
 
 /* Beregner summen */
@@ -116,21 +112,11 @@ double sum(double a, double b, double h, double (*f)(double)) {
 /* Foerste funktion, med forskriften g(x) = x^2 * sin(x) */
 double g(double x) {
 
-  double g;
-
-  /* Forskriften for funktionen */
-  g = (x * x) * sin(x);
-
-  return g;
+  return (x * x) * sin(x);
 }
 
 /* Anden funktion, med forskriften h(x) = sqrt(4 - x^2) */
 double h(double x) {
 
-  double h;
-
-  /* Forskriften for funktionen */
-  h = sqrt(4 - (x * x));
-
-  return h;
+  return sqrt(4 - (x * x));
 }
