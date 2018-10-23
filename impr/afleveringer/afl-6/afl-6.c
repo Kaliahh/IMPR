@@ -102,7 +102,7 @@ double sum(double a, double b, double h, double (*f)(double)) {
   double sum = 0;
 
   /* Beregner summen fra den nedre graense til den oevre, og gaar h op for hver gennemgang */
-  for (double i = a; i <= b; i += h) {
+  for (double i = a; i < b; i += h) {
     sum += (*f)(i);
   }
 
@@ -118,5 +118,6 @@ double g(double x) {
 /* Anden funktion, med forskriften h(x) = sqrt(4 - x^2) */
 double h(double x) {
 
-  return sqrt(4 - (x * x));
+  //return sqrt(4 - (x * x));
+  return 2 * x;
 }
