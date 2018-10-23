@@ -1,4 +1,4 @@
-/* Navn: Ane Soegaard Joergensen
+/* Navn: Ane Søgaard Jørgensen
  * Dato: 17/10-2018
  * Beskrivelse: Opg. 17 side 334. Find arealet under en kurve.
  */
@@ -24,14 +24,14 @@ int main(void) {
   double (*fP)(double);
 
 
-  /* Her starter loopet, saa programmet ikke stopper efter hver beregning af arealet */
+  /* Her starter loopet, så programmet ikke stopper efter hver beregning af arealet */
   while(SENTINEL != 1) {
 
-    /* Prompter brugeren for hvilken funktion de vil koere */
+    /* Prompter brugeren for hvilken funktion de vil køre */
     printf("Which function do you want to run? (g/h): ");
     scanf(" %c", &choice);
 
-    /* Checker hvilken funktion brugeren vil koere, og saetter pointeren til den funktion */
+    /* Checker hvilken funktion brugeren vil køre, og sætter pointeren til den funktion */
     if (choice == 'g') {
       printf("(Try a = 0, b = 3.14159)\n");
       fP = &g;
@@ -48,7 +48,7 @@ int main(void) {
       return 0;
     }
 
-    /* Prompter brugeren for 2 tal, a og b, som er graenserne for integralet */
+    /* Prompter brugeren for 2 tal, a og b, som er grænserne for integralet */
     printf("\nInput 2 numbers, a and b, for the limits of the area: ");
     scanf(" %lf%lf", &a, &b);
 
@@ -62,14 +62,16 @@ int main(void) {
     /* Printer arealet */
     printf("Area: %lf\n\n", area);
 
-    /* Beder brugeren vaelge mellem at afslutte, eller fortsaette */
+    /* Beder brugeren vælge mellem at afslutte, eller fortsætte */
     printf("Do you want to quit? (y/n): ");
     scanf(" %c", &choice);
 
     if (choice != 'n') {
-      printf("- - - - - - - - - - - - - - - - - - -\n");
       SENTINEL = 1;
     }
+
+    /* Opdeler det der bliver printet på terminalen, så det er nemmere at følge med */
+    printf("- - - - - - - - - - - - - - - - - - - - - -\n\n");
   }
 
   return 0;
@@ -81,7 +83,7 @@ double trap(double a, double b, int n, double (*f)(double)) {
 
   double h, area;
 
-  /* Beregner hoejden af subintervallerne med sub_height funktionen */
+  /* Beregner højden af subintervallerne med sub_height funktionen */
   h = sub_height(a, b, n);
 
   /* Beregner arealet */
@@ -90,7 +92,7 @@ double trap(double a, double b, int n, double (*f)(double)) {
   return area;
 }
 
-/* Beregner hoejden af subintervallerne */
+/* Beregner højden af subintervallerne */
 double sub_height(double a, double b, int n) {
 
   return (b - a) / n;
@@ -101,7 +103,7 @@ double sum(double a, double b, double h, double (*f)(double)) {
 
   double sum = 0;
 
-  /* Beregner summen fra den nedre graense til den oevre, og gaar h op for hver gennemgang */
+  /* Beregner summen fra den nedre gærnse til den øvre, og går h op for hver gennemgang */
   for (double i = a; i < b; i += h) {
     sum += (*f)(i);
   }
@@ -109,7 +111,7 @@ double sum(double a, double b, double h, double (*f)(double)) {
   return sum;
 }
 
-/* Foerste funktion, med forskriften g(x) = x^2 * sin(x) */
+/* Første funktion, med forskriften g(x) = x^2 * sin(x) */
 double g(double x) {
 
   return (x * x) * sin(x);
@@ -118,6 +120,5 @@ double g(double x) {
 /* Anden funktion, med forskriften h(x) = sqrt(4 - x^2) */
 double h(double x) {
 
-  //return sqrt(4 - (x * x));
-  return 2 * x;
+  return sqrt(4 - (x * x));
 }
