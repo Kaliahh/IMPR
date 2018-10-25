@@ -4,21 +4,18 @@ int main(void) {
 
   int a = 0, b = 1, sum, i;
 
-  for (i = 0; a < 1e9; i++) { //Så længe a er mindre end, køres koden
+  for (i = 0; a < 4000000; i++) { //Sï¿½ lï¿½nge a er mindre end, kï¿½res koden
 
-    a = a + b;  //I disse to linjer lægges de to sidste udregninger sammen.
-    b = a - b; 
+    a += b;  //I disse to linjer lï¿½gges de to sidste udregninger sammen.
+    b = a - b;
 
     if (a % 2 == 0) { //Her tjekker vi om a er et lige tal
-      sum += a; //Hvis a er lige, lægges det til summen
+      sum += a; //Hvis a er lige, lï¿½gges det til summen
     }
 
-    
+
     printf("a: %7d, b: %7d, sum: %7d\n", a, b, sum);
   }
 
   return 0;
 }
-
-
-
