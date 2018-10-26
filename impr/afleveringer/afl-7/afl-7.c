@@ -76,7 +76,7 @@ int main(void) {
 
   /* Forener de to arrays, så elementerne er sorterede fra mindst til størst.
    * Hvis der forekommer flere af de samme værdier i de to arrays,
-   * bliver antallet returneret til duplicate */
+   * bliver antallet af duplikationer returneret til duplicate */
   duplicate = mergeArrays(x, y, merged, xsize, ysize, mergedsize);
 
   /* Printer det forenede array, og stopper tidligere end længden af mergedsize,
@@ -147,11 +147,17 @@ int mergeArrays(double *x, double *y, double *merged, int xsize, int ysize, int 
   return duplicate;
 }
 
+/* Herfra er der utility funktioner,
+ * til at putte tilfældige tal i et array,
+ * sammenligne elementer i et array,
+ * printe et array og en comparator funktion til qsort */
+
 /* Tildeler "tilfældige" indekser i det givne array */
 void arrayRandomizer(double *array, int size) {
   double x;
   int SENTINEL = 0;
 
+  /* Genererer tilfældige tal */
   for (int i = 0; i < size; i++) {
     x = ((rand() % 200) - 100) * 0.9;
 
