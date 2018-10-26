@@ -74,6 +74,77 @@ int main(void) {
   return 0;
 }
 
+/* Forener to sorterede arrays */
+int mergeArrays(double *x, double *y, double *merged, int xsize, int ysize, int mergedsize) {
+
+  int i = 0, j = 0, k = 0, duplicate = 0;
+  int SENTINEL = 0;
+
+  /* Forener de to arrays x[] og y[], i et samlet array merged[] */
+  while (i < xsize && j < ysize) {
+
+    if (x[i] == y[j]) {
+      merged[k] = x[i];
+      duplicate++;
+      i++;
+      j++;
+    }
+
+    else if (x[i] < y[j]) {
+
+      /* Tester om værdien i x[i] allerede forekommer i det forenede array */
+      //SENTINEL = elementComp(merged, mergedsize, x[i]);
+
+      /* Hvis værdien af x[i] allerede eksisterer, springes x[i] over,
+       * og duplicate tælles op med 1 */
+      /*if (SENTINEL == 1) {
+        duplicate++;
+        i++;
+        SENTINEL = 0;
+        break;
+      }*/
+      merged[k] = x[i];
+      i++;
+    }
+
+    else {
+
+      /* Samme fremgangsmåde her, bare med y[j] i stedet for x[i] */
+      /*SENTINEL = elementComp(merged, mergedsize, y[j]);
+
+      if (SENTINEL == 1) {
+        duplicate++;
+        j++;
+        SENTINEL = 0;
+        break;
+      }*/
+      merged[k] = y[j];
+      j++;
+    }
+
+    k++;
+  }
+
+  /* Kopierer de resterende elementer af x[] over i merged[], hvis der er flere tilbage.
+   * Disse elementer må nødvendigvis være større end alle de foregående tal,
+   * så de kan bare kopieres over */
+  while (i < xsize) {
+    merged[k] = x[i];
+    i++;
+    k++;
+  }
+
+  /* Gør det samme med elementer fra y[] */
+  while (j < ysize) {
+    merged[k] = y[j];
+    j++;
+    k++;
+  }
+
+  /* Returnerer antallet af duplicates til main funktionen, til brug i printf */
+  return duplicate;
+}
+
 /* Tildeler tilfældige tal mellem -100 og 100 til alle subscripts i det givne array */
 void arrayRandomizer(double *array, int size) {
   double x;
@@ -117,71 +188,6 @@ void arrayPrinter(double *array, int size) {
   }
   printf("\n");
 }
-
-/* Forener to sorterede arrays */
-int mergeArrays(double *x, double *y, double *merged, int xsize, int ysize, int mergedsize) {
-
-  int i = 0, j = 0, k = 0, duplicate = 0;
-  int SENTINEL = 0;
-
-  /* Forener de to arrays x[] og y[], i et samlet array merged[] */
-  while (i < xsize && j < ysize) {
-
-    if (x[i] <= y[j]) {
-
-      /* Tester om værdien i x[i] allerede forekommer i det forenede array */
-      SENTINEL = elementComp(merged, mergedsize, x[i]);
-
-      /* Hvis værdien af x[i] allerede eksisterer, springes x[i] over,
-       * og duplicate tælles op med 1 */
-      if (SENTINEL == 1) {
-        duplicate++;
-        i++;
-        SENTINEL = 0;
-        break;
-      }
-      merged[k] = x[i];
-      i++;
-    }
-
-    else {
-
-      /* Samme fremgangsmåde her, bare med y[j] i stedet for x[i] */
-      SENTINEL = elementComp(merged, mergedsize, y[j]);
-
-      if (SENTINEL == 1) {
-        duplicate++;
-        j++;
-        SENTINEL = 0;
-        break;
-      }
-      merged[k] = y[j];
-      j++;
-    }
-
-    k++;
-  }
-
-  /* Kopierer de resterende elementer af x[] over i merged[], hvis der er flere tilbage.
-   * Disse elementer må nødvendigvis være større end alle de foregående tal,
-   * så de kan bare kopieres over */
-  while (i < xsize) {
-    merged[k] = x[i];
-    i++;
-    k++;
-  }
-
-  /* Gør det samme med elementer fra y[] */
-  while (j < ysize) {
-    merged[k] = y[j];
-    j++;
-    k++;
-  }
-
-  /* Returnerer antallet af duplicates til main funktionen, til brug i printf */
-  return duplicate;
-}
-
 
 /* Sammeligner de to værdier, og returnerer en værdi til qsort baseret på forholdet */
 int qComparator(const void *a, const void *b) {
