@@ -8,7 +8,7 @@
 # include <time.h>
 # include <assert.h>
 
-# define MINIMUM_SIZE 2
+# define MINIMUM_ARRAY_SIZE 1
 
 void arrayRandomizer(double *, int);
 int elementComp(double *, int, double);
@@ -23,30 +23,43 @@ int main(void) {
   srand((double) time(&t));
 
   /* Initialiserer de to arrays med et "tilfældigt" antal elementer */
-  int n = (rand() % 12) + MINIMUM_SIZE;
-  int m = (rand() % 12) + MINIMUM_SIZE;
-  double x[n], y[m];
-
-  /* Initialiserer et merged array, og størrelserne på de 3 arrays */
-  double merged[n + m];
-  int xsize, ysize, mergedsize;
+  int xsize = (rand() % 12) + MINIMUM_ARRAY_SIZE;
+  int ysize = (rand() % 12) + MINIMUM_ARRAY_SIZE;
+  int mergedsize = xsize + ysize;
   int duplicate = 0;
+
+  /* Initialiserer de tre arrays */
+  double *x = malloc(xsize * sizeof(*x));
+  double *y = malloc(ysize * sizeof(*y));
+  double *merged = malloc(mergedsize * sizeof(*merged));
+
+  /* Checker om alle arrays fik den rigtige mængde hukommelse */
+  if (x == NULL) {
+    printf("Kunne ikke allokere nok hukommelse\n");
+    exit(EXIT_FAILURE);
+  }
+
+  if (y == NULL) {
+    printf("Kunne ikke allokere nok hukommelse\n");
+    exit(EXIT_FAILURE);
+  }
+
+  if (merged == NULL) {
+    printf("Kunne ikke allokere nok hukommelse\n");
+    exit(EXIT_FAILURE);
+  }
+
 
   printf("\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n");
   printf("Dette program forener to sorterede arrays, til et samlet sorteret array\n");
   printf("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n\n");
-
-  /* Finder størrelsen af de tre arrays */
-  xsize = sizeof(x) / sizeof(double);
-  ysize = sizeof(y) / sizeof(double);
-  mergedsize = sizeof(merged) / sizeof(double);
 
   /* Initialiserer de to arrays x og y, med "tilfældige" tal */
   arrayRandomizer(x, xsize);
   arrayRandomizer(y, ysize);
 
   /* Sorterer array x og y, fra mindst til størst.
-   * qsort er lidt "ulovlig", men fordi der genereres tilfældige arrays,
+   * qsort er lidt "ulovlig" i denne opgave, men fordi der genereres tilfældige arrays,
    * i stedet for predefinerede arrays der allerede er sorterede manuelt,
    * mener jeg at dette er okay */
   qsort(x, xsize, sizeof(double), qComparator);
@@ -70,6 +83,11 @@ int main(void) {
    * hvis der var duplicates mellem de to arrays */
   printf("Forenet array[%d]\n", mergedsize - duplicate);
   arrayPrinter(merged, mergedsize - duplicate);
+  printf("\n%d duplikat(er)\n", duplicate);
+
+  free(x);
+  free(y);
+  free(merged);
 
   return 0;
 }
@@ -83,6 +101,7 @@ int mergeArrays(double *x, double *y, double *merged, int xsize, int ysize, int 
   /* Forener de to arrays x[] og y[], i et samlet array merged[] */
   while (i < xsize && j < ysize) {
 
+    /* Checker om de to værdier er ens. Hvis de er, tages x[i], og de to "pegere" j og i, tælles op */
     if (x[i] == y[j]) {
       merged[k] = x[i];
       duplicate++;
@@ -90,38 +109,21 @@ int mergeArrays(double *x, double *y, double *merged, int xsize, int ysize, int 
       j++;
     }
 
+    /* Hvis x[i] er mindre end y[j], tilføjes den til merged[].
+     * i tælles op med 1, så der ses på den næste værdi for x[] */
     else if (x[i] < y[j]) {
-
-      /* Tester om værdien i x[i] allerede forekommer i det forenede array */
-      //SENTINEL = elementComp(merged, mergedsize, x[i]);
-
-      /* Hvis værdien af x[i] allerede eksisterer, springes x[i] over,
-       * og duplicate tælles op med 1 */
-      /*if (SENTINEL == 1) {
-        duplicate++;
-        i++;
-        SENTINEL = 0;
-        break;
-      }*/
       merged[k] = x[i];
       i++;
     }
 
+    /* Dette tilfælde sker kun hvis x[i] > y[j]. y[j] tilføjes til merged.
+     * j tælles op med 1, så der ses på den næste værdi af j[] */
     else {
-
-      /* Samme fremgangsmåde her, bare med y[j] i stedet for x[i] */
-      /*SENTINEL = elementComp(merged, mergedsize, y[j]);
-
-      if (SENTINEL == 1) {
-        duplicate++;
-        j++;
-        SENTINEL = 0;
-        break;
-      }*/
       merged[k] = y[j];
       j++;
     }
 
+    /* Her tælles indekset i det forenede array op */
     k++;
   }
 
@@ -145,13 +147,13 @@ int mergeArrays(double *x, double *y, double *merged, int xsize, int ysize, int 
   return duplicate;
 }
 
-/* Tildeler tilfældige tal mellem -100 og 100 til alle subscripts i det givne array */
+/* Tildeler "tilfældige" indekser i det givne array */
 void arrayRandomizer(double *array, int size) {
   double x;
   int SENTINEL = 0;
 
   for (int i = 0; i < size; i++) {
-    x = (rand() % 200) - 100;
+    x = ((rand() % 200) - 100) * 0.9;
 
     /* Tester om x allerede findes i arrayet */
     SENTINEL = elementComp(array, size, x);
@@ -164,7 +166,6 @@ void arrayRandomizer(double *array, int size) {
 
     /* Til sidst tildeles værdien x til array[i] */
     array[i] = x;
-
   }
 }
 
@@ -191,18 +192,7 @@ void arrayPrinter(double *array, int size) {
 
 /* Sammeligner de to værdier, og returnerer en værdi til qsort baseret på forholdet */
 int qComparator(const void *a, const void *b) {
-  double *tp1 = (double*)a,
-         *tp2 = (double*)b;
+  double *tp1 = (double*)a, *tp2 = (double*)b;
 
-  if (*tp1 < *tp2) {
-    return -1;
-  }
-
-  else if (*tp1 > *tp2) {
-    return 1;
-  }
-
-  else {
-    return 0;
-  }
+  return *tp1 - *tp2;
 }
