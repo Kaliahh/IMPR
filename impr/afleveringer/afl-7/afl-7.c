@@ -10,10 +10,11 @@
 
 # define MINIMUM_ARRAY_SIZE 1
 
-void arrayRandomizer(double *, int);
-int elementComp(double *, int, double);
-void arrayPrinter(double *, int);
 int mergeArrays(double *, double *, double *, int, int, int);
+void memCheck(double *);
+void arrayRandomizer(double *, int);
+void arrayPrinter(double *, int);
+int elementComp(double *, int, double);
 int qComparator(const void *a, const void *b);
 
 int main(void) {
@@ -34,21 +35,9 @@ int main(void) {
   double *merged = malloc(mergedsize * sizeof(*merged));
 
   /* Checker om alle arrays fik den rigtige mængde hukommelse */
-  if (x == NULL) {
-    printf("Kunne ikke allokere nok hukommelse\n");
-    exit(EXIT_FAILURE);
-  }
-
-  if (y == NULL) {
-    printf("Kunne ikke allokere nok hukommelse\n");
-    exit(EXIT_FAILURE);
-  }
-
-  if (merged == NULL) {
-    printf("Kunne ikke allokere nok hukommelse\n");
-    exit(EXIT_FAILURE);
-  }
-
+  memCheck(x);
+  memCheck(y);
+  memCheck(merged);
 
   printf("\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n");
   printf("Dette program forener to sorterede arrays, til et samlet sorteret array\n");
@@ -147,6 +136,14 @@ int mergeArrays(double *x, double *y, double *merged, int xsize, int ysize, int 
   return duplicate;
 }
 
+/* Checker om et givet array har fået allokeret hukommelse */
+void memCheck(double *a) {
+  if (a == NULL) {
+    printf("Kunne ikke allokere nok hukommelse\n");
+    exit(EXIT_FAILURE);
+  }
+}
+
 /* Herfra er der utility funktioner,
  * til at putte tilfældige tal i et array,
  * sammenligne elementer i et array,
@@ -159,7 +156,7 @@ void arrayRandomizer(double *array, int size) {
 
   /* Genererer tilfældige tal */
   for (int i = 0; i < size; i++) {
-    x = ((rand() % 200) - 100) * 0.9;
+    x = (rand() % 200) - 100;
 
     /* Tester om x allerede findes i arrayet */
     SENTINEL = elementComp(array, size, x);
