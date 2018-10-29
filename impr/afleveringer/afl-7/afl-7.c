@@ -6,7 +6,6 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <time.h>
-# include <assert.h>
 
 # define MINIMUM_ARRAY_SIZE 1
 
@@ -34,16 +33,16 @@ int main(void) {
   double *y = malloc(ysize * sizeof(*y));
   double *merged = malloc(mergedsize * sizeof(*merged));
 
+  printf("\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n");
+  printf("Dette program forener to sorterede arrays, til et samlet sorteret array\n");
+  printf("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n\n");
+
   /* Checker om alle arrays fik den rigtige mængde hukommelse */
   memCheck(x);
   memCheck(y);
   memCheck(merged);
 
-  printf("\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n");
-  printf("Dette program forener to sorterede arrays, til et samlet sorteret array\n");
-  printf("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n\n");
-
-  /* Initialiserer de to arrays x og y, med "tilfældige" tal */
+  /* Fylder de to arrays x og y, med "tilfældige" tal */
   arrayRandomizer(x, xsize);
   arrayRandomizer(y, ysize);
 
@@ -74,6 +73,7 @@ int main(void) {
   arrayPrinter(merged, mergedsize - duplicate);
   printf("\n%d duplikat(er)\n", duplicate);
 
+  /* Frigiver hukommelsen allokeret til de arrays der er blevet brugt */
   free(x);
   free(y);
   free(merged);
@@ -85,7 +85,6 @@ int main(void) {
 int mergeArrays(double *x, double *y, double *merged, int xsize, int ysize, int mergedsize) {
 
   int i = 0, j = 0, k = 0, duplicate = 0;
-  int SENTINEL = 0;
 
   /* Forener de to arrays x[] og y[], i et samlet array merged[] */
   while (i < xsize && j < ysize) {
@@ -145,6 +144,7 @@ void memCheck(double *a) {
 }
 
 /* Herfra er der utility funktioner,
+ * som fint kunne være i en anden fil,
  * til at putte tilfældige tal i et array,
  * sammenligne elementer i et array,
  * printe et array og en comparator funktion til qsort */
@@ -159,12 +159,12 @@ void arrayRandomizer(double *array, int size) {
     x = (rand() % 200) - 100;
 
     /* Tester om x allerede findes i arrayet */
-    SENTINEL = elementComp(array, size, x);
+    SENTINEL = elementComp(array, i, x);
 
     /* Hvis værdien for x allerede findes, lægges 1 til, indtil det er anderledes end alt andet */
     while (SENTINEL == 1) {
       ++x;
-      SENTINEL = elementComp(array, size, x);
+      SENTINEL = elementComp(array, i, x);
     }
 
     /* Til sidst tildeles værdien x til array[i] */
@@ -175,7 +175,7 @@ void arrayRandomizer(double *array, int size) {
 /* Sammenligner x med alle elementer i et array,
  * for at se om værdien af x forekommer allerede */
 int elementComp(double *array, int size, double x) {
-  for (int i = 0; i < size; i++) {
+  for (int i = 0; i <= size; i++) {
     /* Returnerer sand hvis der allerede er et tal */
     if (x == array[i]) {
       return 1;
@@ -197,5 +197,8 @@ void arrayPrinter(double *array, int size) {
 int qComparator(const void *a, const void *b) {
   double *tp1 = (double*)a, *tp2 = (double*)b;
 
+  /* Dette er kun "sikkert", når der arbejdes med små tal.
+   * Hvis tallene bliver større eller mindre end det datatypen kan indeholde,
+   * opstår der fejl */
   return *tp1 - *tp2;
 }
