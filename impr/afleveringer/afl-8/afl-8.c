@@ -10,18 +10,40 @@
 # include <unistd.h>
 # include <string.h>
 # include <math.h>
+# include <ctype.h>
 
 void identifier(char *, char*, char*, char*);
+void display(char *, char *, char *);
 
 int main(void) {
 
-  char *code, warehouse[5], id[5], qualifers[5], noget = '1';
-  printf("Noget: %c\n", noget);
+  char code[] = "ABC1234D56", *warehouse, *id, *qualifers;
+
+
+
+  identifier(code, warehouse, id, qualifers);
+
 
   return 0;
 }
 
 
 void identifier(char *code, char* warehouse, char* id, char* qualifers) {
+
+  int i = 0;
+
+  while (SENTINEL == 0) {
+    if (isdigit(code[i]) == )
+  }
+
+  display(warehouse, id, qualifers);
+}
+
+/* Printer resultatet til terminalen */
+void display(char *warehouse, char *id, char *qualifers) {
+
+  printf("Warehouse: %s\n", warehouse);
+  printf("Product ID: %s\n", id);
+  printf("Qualifers: %s\n", qualifers);
 
 }
