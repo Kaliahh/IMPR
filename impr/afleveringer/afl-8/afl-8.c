@@ -12,38 +12,52 @@
 # include <math.h>
 # include <ctype.h>
 
-void identifier(char *, char*, char*, char*);
-void display(char *, char *, char *);
+void identifier(char *, int, char*, char*, char*);
+void displayInfo(char *, char *, char *);
+void scanCode(char *, int);
 
 int main(void) {
 
-  char code[] = "ABC1234D56", *warehouse, *id, *qualifers;
+  char code[50] = "ABC1234D56", warehouse[50], *id, *qualifers;
+  int n = strlen(code);
 
-
-
-  identifier(code, warehouse, id, qualifers);
-
+  identifier(code, n, warehouse, id, qualifers);
 
   return 0;
 }
 
 
-void identifier(char *code, char* warehouse, char* id, char* qualifers) {
+void identifier(char *code, int n, char* warehouse, char* id, char* qualifers) {
 
   int i = 0;
 
-  while (SENTINEL == 0) {
-    if (isdigit(code[i]) == )
+  for (int i = 0; i < n; i++) {
+
+    if (isdigit(i) == 1) {
+
+      for (int j = 0; j <= i; j++) {
+        warehouse[j] = code[j];
+      }
+    }
+
   }
 
-  display(warehouse, id, qualifers);
+  displayInfo(warehouse, id, qualifers);
 }
 
 /* Printer resultatet til terminalen */
-void display(char *warehouse, char *id, char *qualifers) {
+void displayInfo(char *warehouse, char *id, char *qualifers) {
 
   printf("Warehouse: %s\n", warehouse);
   printf("Product ID: %s\n", id);
   printf("Qualifers: %s\n", qualifers);
-
 }
+
+/*
+void scanCode(char *code, int n) {
+
+  for (int i = 0; i <= n; i++) {
+    scanf("%c", &code[i]);
+  }
+}
+*/
