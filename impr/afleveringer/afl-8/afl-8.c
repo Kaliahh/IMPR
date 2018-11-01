@@ -19,7 +19,7 @@ void scanCode(char *, int);
 
 int main(void) {
 
-  char code[MAX_LENGTH], warehouse[MAX_LENGTH], id[MAX_LENGTH], qualifers[MAX_LENGTH];
+  char code[MAX_LENGTH], warehouse[MAX_LENGTH], id[MAX_LENGTH], qualifiers[MAX_LENGTH];
 
   /* Prompter brugeren for en tekststreng */
   printf("Input code [CAPS][Max %d]: ", MAX_LENGTH);
@@ -29,24 +29,24 @@ int main(void) {
   /* Fylder de 3 arrays med \0 tegn */
   arrayFiller(warehouse, MAX_LENGTH);
   arrayFiller(id, MAX_LENGTH);
-  arrayFiller(qualifers, MAX_LENGTH);
+  arrayFiller(qualifiers, MAX_LENGTH);
 
-  /* Identificerer warehouse, id og qualifers */
-  identifier(code, strlen(code), warehouse, id, qualifers);
+  /* Identificerer warehouse, id og qualifiers */
+  identifier(code, strlen(code), warehouse, id, qualifiers);
 
-  /* Printer warehouse, id og qualifers */
-  displayInfo(warehouse, id, qualifers);
+  /* Printer warehouse, id og qualifiers */
+  displayInfo(warehouse, id, qualifiers);
 
   return 0;
 }
 
-/* Identificerer warehouse, id og qualifers */
-void identifier(char *code, int str_len, char* warehouse, char* id, char* qualifers) {
+/* Identificerer warehouse, id og qualifiers */
+void identifier(char *code, int str_len, char* warehouse, char* id, char* qualifiers) {
 
   int WAREHOUSE = 0, ID = 0;
   int i = 0, o = 0;
 
-  /* Checker for warehouse */
+  /* Checker for warehouse, op til det næste tal */
   while (WAREHOUSE == 0) {
 
     /* Checker om den (int) typecastede værdi af code[i] er mellem 65 og 90 (Store bogstaver, ASCII) */
@@ -63,7 +63,7 @@ void identifier(char *code, int str_len, char* warehouse, char* id, char* qualif
     }
   }
 
-  /* Checker for id */
+  /* Checker for id, op til det næste bogstav */
   while (WAREHOUSE == 1 && ID == 0) {
 
     /* Checker om den (int) typecastede værdi af code[i] er mellem 48 og 57 (Tal, ASCII) */
@@ -79,19 +79,19 @@ void identifier(char *code, int str_len, char* warehouse, char* id, char* qualif
     }
   }
 
-  /* Checker for qualifers, op til længden af code tekststrengen */
+  /* Checker for qualifiers, op til længden af code tekststrengen */
   while (WAREHOUSE == 1 && ID == 1 && i != str_len) {
-    qualifers[i - o] = code[i];
+    qualifiers[i - o] = code[i];
     i++;
   }
 }
 
 /* Printer resultatet til terminalen */
-void displayInfo(char *warehouse, char *id, char *qualifers) {
+void displayInfo(char *warehouse, char *id, char *qualifiers) {
 
   printf("Warehouse: %s\n", warehouse);
   printf("Product ID: %s\n", id);
-  printf("Qualifers: %s\n", qualifers);
+  printf("Qualifers: %s\n", qualifiers);
 }
 
 /* Fylder et char array med et givent tegn */
