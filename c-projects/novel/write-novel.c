@@ -9,14 +9,43 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <string.h>
-# include <math.h>
+
+void arrayComma(FILE *);
+
+int main (void) {
+   FILE * fP;
+   char str[60];
+   int i = 0;
+
+   arrayComma(fP);
+
+   return 0;
+}
+
+void arrayComma(FILE *fP) {
+  char str[60];
+  int i = 0;
+
+  while (i <= 3000) {
+    fP = fopen("word-list.txt", "r");
+
+    fgets(str, 60, fP);
+    printf("str: %s, ", str);
+
+    fP = fopen("word-list-comma.txt", "w");
+
+    fprintf(fP, "%s, ", str);
+
+    i++;
+  }
+}
+/*
 
 int main (void) {
    FILE *fp;
    char str[60];
    int i = 0;
 
-   /* opening file for reading */
    fp = fopen("word-list.txt" , "r");
    if(fp == NULL) {
       perror("Error opening file");
@@ -25,8 +54,7 @@ int main (void) {
 
    while (i <= 3000) {
      if( fgets (str, 60, fp)!=NULL ) {
-        /* writing content to stdout */
-        printf("%s,\n", str);
+        fprintf(fP, "%s,\n", str);
      }
 
      i++;
@@ -34,3 +62,4 @@ int main (void) {
 
    return(0);
 }
+*/
