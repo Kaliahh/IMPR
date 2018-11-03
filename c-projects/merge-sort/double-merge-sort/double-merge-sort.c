@@ -14,7 +14,7 @@ void mergeSortD(double *a, int f, int l) {
     int m = f + ((l - f) / 2);
     //printf("m: %d\n", m);
 
-    /* Kalder mergeSortD (Recursive) på den første halvdel og den næste halvdel */
+    /* Kalder mergeSortD (Rekursivt) på den første halvdel og den næste halvdel */
     mergeSortD(a, f, m);
     mergeSortD(a, m + 1, l);
 

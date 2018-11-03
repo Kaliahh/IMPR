@@ -10,37 +10,45 @@
 # include <unistd.h>
 # include <string.h>
 
-void arrayComma(FILE *);
+# define WORD_COUNT 3000
+# define WORD_LEN 30
+
+void arrayComma(FILE *, char (*)[WORD_LEN]);
+void arrayFiller(char (*)[WORD_LEN]);
 
 int main (void) {
    FILE * fP;
-   char str[60];
-   int i = 0;
+   char words[WORD_COUNT][WORD_LEN];
 
-   arrayComma(fP);
+   arrayFiller(words);
+
+   arrayComma(fP, words);
 
    return 0;
 }
 
-void arrayComma(FILE *fP) {
+void arrayComma(FILE *fP, char (*words)[WORD_LEN]) {
   char str[60];
   int i = 0;
 
-  while (i <= 3000) {
+  while (i <= WORD_COUNT) {
     fP = fopen("word-list.txt", "r");
-
-    fgets(str, 60, fP);
-    printf("str: %s, ", str);
-
-    fP = fopen("word-list-comma.txt", "w");
-
-    fprintf(fP, "%s, ", str);
+    printf("%s\n", words[i]);
+    fgets(words[i], 60, fP);
 
     i++;
   }
 }
-/*
 
+void arrayFiller(char (*words)[0]) {
+  for (int i = 0; i < WORD_COUNT; i++) {
+    for (int j = 0; j < WORD_LEN; j++) {
+      words[i][j] = "HELLO";
+    }
+  }
+}
+
+/*
 int main (void) {
    FILE *fp;
    char str[60];

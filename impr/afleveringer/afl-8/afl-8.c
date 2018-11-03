@@ -6,20 +6,24 @@
  */
 
 # include <stdio.h>
+# include <stdlib.h>
 # include <string.h>
 # include <ctype.h>
 
 /* En maks længde på tekststrengen */
 # define MAX_LENGTH 20
 
-void identifier(char *, int, char*, char*, char*);
+void identifier(const char *, int, char*, char*, char*);
 void arrayFiller(char *, int);
-void displayInfo(char *, char *, char *);
-void scanCode(char *, int);
+void displayInfo(const char *, const char *, const char *);
 
 int main(void) {
 
-  char code[MAX_LENGTH], warehouse[MAX_LENGTH], id[MAX_LENGTH], qualifiers[MAX_LENGTH];
+  /* Initialiserer arrays */
+  char *code       = malloc(MAX_LENGTH * sizeof(*code));
+  char *warehouse  = malloc(MAX_LENGTH * sizeof(*warehouse));
+  char *id         = malloc(MAX_LENGTH * sizeof(*id));
+  char *qualifiers = malloc(MAX_LENGTH * sizeof(*qualifiers));
 
   /* Prompter brugeren for en tekststreng */
   printf("Input code [CAPS][Max %d]: ", MAX_LENGTH);
@@ -37,20 +41,28 @@ int main(void) {
   /* Printer warehouse, id og qualifiers */
   displayInfo(warehouse, id, qualifiers);
 
+  /* Frigiver hukommelse */
+  free(code);
+  free(warehouse);
+  free(id);
+  free(qualifiers);
+
   return 0;
 }
 
 /* Identificerer warehouse, id og qualifiers */
-void identifier(char *code, int str_len, char* warehouse, char* id, char* qualifiers) {
+void identifier(const char *code, int str_len, char* warehouse, char* id, char* qualifiers) {
 
-  int WAREHOUSE = 0, ID = 0;
   int i = 0, o = 0;
+
+  /* Flag til brug i while løkker */
+  int WAREHOUSE = 0, ID = 0;
 
   /* Checker for warehouse, op til det næste tal */
   while (WAREHOUSE == 0) {
 
-    /* Checker om den (int) typecastede værdi af code[i] er mellem 65 og 90 (Store bogstaver, ASCII) */
-    if ((int) code[i] >= 65 && (int) code[i] <= 90) {
+    /* Checker om code[i] er et stort bogstav */
+    if (isupper(code[i])) {
       warehouse[i] = code[i];
       i++;
     }
@@ -66,8 +78,8 @@ void identifier(char *code, int str_len, char* warehouse, char* id, char* qualif
   /* Checker for id, op til det næste bogstav */
   while (WAREHOUSE == 1 && ID == 0) {
 
-    /* Checker om den (int) typecastede værdi af code[i] er mellem 48 og 57 (Tal, ASCII) */
-    if ((int) code[i] >= 48  && (int) code[i] <= 57) {
+    /* Checker om code[i] er et tal */
+    if (isdigit(code[i])) {
       /* i - o, er for at starte ved id[0] */
       id[i - o] = code[i];
       i++;
@@ -87,7 +99,7 @@ void identifier(char *code, int str_len, char* warehouse, char* id, char* qualif
 }
 
 /* Printer resultatet til terminalen */
-void displayInfo(char *warehouse, char *id, char *qualifiers) {
+void displayInfo(const char *warehouse, const char *id, const char *qualifiers) {
 
   printf("Warehouse: %s\n", warehouse);
   printf("Product ID: %s\n", id);
