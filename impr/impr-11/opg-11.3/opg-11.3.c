@@ -21,6 +21,10 @@ int main(void) {
 
   scanForDD(&dend, &dsor);
 
+  printf("%d / %d = %d\n", dend, dsor, quotient(dend, dsor));
+  printf("%d modulus %d = %d\n", dend, dsor, modulus(dend, dsor));
+
+  /*
   n = scanForDM();
 
   if (n == 1) {
@@ -32,17 +36,19 @@ int main(void) {
     m = modulus(dend, dsor);
     printf("m: %d\n", m);
   }
+  */
 
   return 0;
 }
 
 int quotient(int dividend, int divisor) {
-  int rest = 0;
+  //int rest = 0;
   int i = 1;
-
   if (dividend - divisor > 0) {
-    rest = dividend - divisor;
-    i = i + quotient(rest, divisor);
+    //rest = dividend - divisor;
+    dividend -= divisor;
+    i += quotient(dividend, divisor);
+    printf("i: %d\n", i);
   }
 
   else if (dividend - divisor < 0) {
