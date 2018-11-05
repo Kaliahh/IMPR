@@ -24,35 +24,24 @@ int main(void) {
   printf("%d / %d = %d\n", dend, dsor, quotient(dend, dsor));
   printf("%d modulus %d = %d\n", dend, dsor, modulus(dend, dsor));
 
-  /*
-  n = scanForDM();
-
-  if (n == 1) {
-    q = quotient(dend, dsor);
-    printf("q: %d\n", q);
-  }
-
-  else if (n == 2) {
-    m = modulus(dend, dsor);
-    printf("m: %d\n", m);
-  }
-  */
-
   return 0;
 }
 
 int quotient(int dividend, int divisor) {
   //int rest = 0;
-  int i = 1;
+  int n = 1;
+
+  printf("dividend: %d\n", dividend);
+
   if (dividend - divisor > 0) {
     //rest = dividend - divisor;
-    dividend -= divisor;
-    i += quotient(dividend, divisor);
-    printf("i: %d\n", i);
+    dividend = dividend - divisor;
+    n = quotient(dividend, divisor);
+    printf("n: %d\n", n);
   }
 
   else if (dividend - divisor < 0) {
-    return i;
+    return n;
   }
 }
 
@@ -73,23 +62,4 @@ void scanForDD(int *dend, int *dsor) {
 
   printf("Indtast dividend og divisor: ");
   scanf(" %d%d", dend, dsor);
-}
-
-int scanForDM(void) {
-
-  char c;
-  printf("Vil du dividere eller finde modulus? (d/m) ");
-  scanf(" %c", &c);
-
-  if (c == 'd') {
-    return 1;
-  }
-
-  else if (c == 'm') {
-    return 2;
-  }
-
-  else {
-    return -1;
-  }
 }
