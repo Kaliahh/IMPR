@@ -5,23 +5,22 @@
 
 # include <stdio.h>
 # include <stdlib.h>
-# include <unistd.h>
 # include <string.h>
 
 # define DECK_SIZE 55
 
 /* Initialiserer en enumeration for alle kort, både værdi og farve */
-enum card_type {NullType, Two = 2, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King, Ace = 20, Joker = 30};
-enum suit {NullSuite, Clubs, Diamonds, Hearts, Spades};
+enum card_type {Two = 2, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King, Ace = 20, Joker = 30};
+enum suit {Clubs, Diamonds, Hearts, Spades};
 
-/* Typedeffer dem, så de er lettere at tilgå */
+/* Typedeffer enumerationerne, så de er lettere at tilgå */
 typedef enum card_type card_type;
 typedef enum suit suit;
 
 /* Struct for et kort */
 struct card {
-  card_type value;
-  suit colour;
+  int value;
+  int colour;
 };
 
 /* Typedeffer struct for kort, så det er nemmere at tilgå */
@@ -33,19 +32,19 @@ int main(void) {
 
   card deck[DECK_SIZE];
 
-  card ace_of_spades = {Ace, Spades};
+  card ace_of_spades = {Four, Spades};
 
   arrayFiller(deck);
 
-  printf("%d\n", ace_of_spades.colour);
+  printf("%d\n", deck[30].value);
 
   return 0;
 }
 
 
 void arrayFiller(card *deck) {
-  card zero = {NullType, NullSuite};
   for (int i = 0; i < DECK_SIZE; i++) {
-    deck[i] = zero;
+    deck[i].colour = 0;
+    deck[i].value = 0;
   }
 }

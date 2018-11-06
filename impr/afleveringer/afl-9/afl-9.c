@@ -8,12 +8,12 @@
 
 # define MAX_LEN 30
 
-char *is_palindrome_iter(const char*, int, int);
+char *is_palindrome_iter(const char*);
 char *is_palindrome_rec(const char *, int, int);
 
 int main(void) {
 
-  int n = 0, size;
+  int n;
   char str[MAX_LEN];
 
   /* Prompter brugeren for et ord */
@@ -22,18 +22,20 @@ int main(void) {
   printf("\n");
 
   /* "- 2", er fordi \0 ikke skal tælles med */
-  size = strlen(str) - 2;
+  n = strlen(str) - 2;
 
   /* Kalder funktionerne */
-  printf("Rekursivt: %s\n", is_palindrome_rec(str, 0, size));
-  printf("Iterativt: %s\n", is_palindrome_iter(str, 0, size));
+  printf("Rekursivt: %s\n", is_palindrome_rec(str, 0, n));
+  printf("Iterativt: %s\n", is_palindrome_iter(str));
 
   return 0;
 }
 
 /* Checker om en tekststreng er et palindrom, iterativt */
-char *is_palindrome_iter(const char *array, int i, int j) {
+char *is_palindrome_iter(const char *array) {
   int SENTINEL = 0;
+  int j = strlen(array) - 2;
+  int i = 0;
 
   /* Bliver ved, indtil array[i] og array[j] ikke er det samme,
    * eller hvis i bliver større end j */
@@ -56,6 +58,8 @@ char *is_palindrome_iter(const char *array, int i, int j) {
 
 /* Checker om en tekststreng er et palindrom, rekursivt */
 char *is_palindrome_rec(const char *array, int i, int j) {
+  //j = strlen(array) - 2;
+  //i = 0;
 
   /* Bliver ved på samme måde som den iterative */
   if (i > j) {
