@@ -31,19 +31,22 @@ void arrayComma(FILE *fP, char (*words)[WORD_LEN]) {
   char str[60];
   int i = 0;
 
-  while (i <= WORD_COUNT) {
+  while (i < WORD_COUNT) {
     fP = fopen("word-list.txt", "r");
-    printf("%s\n", words[i]);
-    fgets(words[i], 60, fP);
+    //fgets(words[i], 60, fP);
+
+    fscanf(fP, "%s ", str);
+    printf("str: %s\n", str);
+    //printf("%s\n", words[i]);
 
     i++;
   }
 }
 
-void arrayFiller(char (*words)[0]) {
+void arrayFiller(char (*words)[WORD_LEN]) {
   for (int i = 0; i < WORD_COUNT; i++) {
     for (int j = 0; j < WORD_LEN; j++) {
-      words[i][j] = "HELLO";
+      words[i][j] = 'C';
     }
   }
 }
