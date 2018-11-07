@@ -4,28 +4,25 @@
  */
 
 # include <stdio.h>
+# include <stdlib.h>
 # include <string.h>
 
 # define MAX_LEN 30
 
-char *is_palindrome_iter(const char*);
-char *is_palindrome_rec(const char *, int, int);
+char *is_palindrome_iter(const char *);
+char *is_palindrome_rec(const char *);
 
 int main(void) {
 
-  int n;
   char str[MAX_LEN];
 
   /* Prompter brugeren for et ord */
-  printf("Input et ord: ");
-  fgets(str, MAX_LEN, stdin);
+  printf("Input et ord[MAX %d]: ", MAX_LEN);
+  scanf("%s", str);
   printf("\n");
 
-  /* "- 2", er fordi \0 ikke skal tælles med */
-  n = strlen(str) - 2;
-
   /* Kalder funktionerne */
-  printf("Rekursivt: %s\n", is_palindrome_rec(str, 0, n));
+  printf("Rekursivt: %s\n", is_palindrome_rec(str));
   printf("Iterativt: %s\n", is_palindrome_iter(str));
 
   return 0;
@@ -34,7 +31,7 @@ int main(void) {
 /* Checker om en tekststreng er et palindrom, iterativt */
 char *is_palindrome_iter(const char *array) {
   int SENTINEL = 0;
-  int j = strlen(array) - 2;
+  int j = strlen(array) - 1;
   int i = 0;
 
   /* Bliver ved, indtil array[i] og array[j] ikke er det samme,
@@ -57,12 +54,15 @@ char *is_palindrome_iter(const char *array) {
 }
 
 /* Checker om en tekststreng er et palindrom, rekursivt */
-char *is_palindrome_rec(const char *array, int i, int j) {
-  //j = strlen(array) - 2;
-  //i = 0;
+char *is_palindrome_rec(const char *array) {
+  int j = strlen(array) - 1;
+  int i = 0;
+  char *temp = malloc(strlen(array) * sizeof(*temp));
 
-  /* Bliver ved på samme måde som den iterative */
-  if (i > j) {
+  /* Ved lige antal bogstaver i palindromet, bliver j -1.
+   * Ved ulige antal bogstaver i palindromet, bliver j 0.
+   * i vil blive 0 hver gang (hvis tekstrengen er et palindom) */
+  if (i >= j) {
     return "Ja!";
   }
 
@@ -70,9 +70,10 @@ char *is_palindrome_rec(const char *array, int i, int j) {
     return "Nej";
   }
 
-  /* Kalder sig selv, hvis de to bogstaver er ens,
-   * med indekser der er flyttet et hak tættere på midten af tekststrengen */
   else if (array[i] == array[j]) {
-    is_palindrome_rec(array, ++i, --j);
+    /* Kopierer tekstrengen fra array, over i temp, uden det første og det sidste bogstav */
+    strncpy(temp, array + 1, j - 1);
+    temp[j] = '\0';
+    is_palindrome_rec(temp);
   }
 }
