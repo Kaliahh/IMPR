@@ -10,7 +10,7 @@
 # define DECK_SIZE 55
 
 /* Initialiserer en enumeration for alle kort, både værdi og farve */
-enum card_type {Two = 2, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King, Ace = 20, Joker = 30};
+enum card_type {Two = 2, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King, Ace, Joker = 30};
 enum suit {Clubs, Diamonds, Hearts, Spades};
 
 /* Typedeffer enumerationerne, så de er lettere at tilgå */
@@ -32,11 +32,25 @@ int main(void) {
 
   card deck[DECK_SIZE];
 
+  printf("%d\n", 60 % 13);
+
   card ace_of_spades = {Four, Spades};
+
+  int sum = 0;
 
   arrayFiller(deck);
 
-  printf("%d\n", deck[30].value);
+  for (int i = Clubs; i <= Spades; i++) {
+    printf("i: %d\n", i);
+    for (int j = Two; j <= Ace; j++) {
+      printf("j: %d\n", j);
+      deck[j - 2 + sum].colour = i;
+      deck[j - 2 + sum].value = j;
+      sum++;
+    }
+  }
+
+  printf("%d\n", deck[24].colour);
 
   return 0;
 }
