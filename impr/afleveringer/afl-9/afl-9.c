@@ -74,6 +74,6 @@ char *is_palindrome_rec(const char *array) {
     /* Kopierer tekstrengen fra array, over i temp, uden det første og det sidste bogstav */
     strncpy(temp, array + 1, j - 1);
     temp[j] = '\0';
-    is_palindrome_rec(temp);
+    return is_palindrome_rec(temp);
   }
 }
