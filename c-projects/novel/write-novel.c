@@ -9,68 +9,74 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <string.h>
+# include <time.h>
 
 # define WORD_COUNT 3000
-# define WORD_LEN 30
+# define WORD_LEN 60
+# define NOVEL_LENGTH 50000
 
-void arrayComma(FILE *, char (*)[WORD_LEN]);
-void arrayFiller(char (*)[WORD_LEN]);
+typedef struct {
+  char string[WORD_LEN];
+} word;
+
+int novelWriter(word *);
+int fillWords(word *);
+void listPrinter(const word *);
 
 int main (void) {
-   FILE * fP;
-   char words[WORD_COUNT][WORD_LEN];
+   word word_list[WORD_COUNT];
 
-   arrayFiller(words);
+   time_t t;
+   srand((int) time(&t));
 
-   arrayComma(fP, words);
+   fillWords(word_list);
+
+   novelWriter(word_list);
 
    return 0;
 }
 
-void arrayComma(FILE *fP, char (*words)[WORD_LEN]) {
-  char str[60];
+int novelWriter(word *word_list) {
+  FILE *fP;
   int i = 0;
 
-  while (i < WORD_COUNT) {
-    fP = fopen("word-list.txt", "r");
-    //fgets(words[i], 60, fP);
+  fP = fopen("novel.txt", "w");
 
-    fscanf(fP, "%s ", str);
-    printf("str: %s\n", str);
-    //printf("%s\n", words[i]);
+  if (fP == NULL) {
+     perror("Error opening file");
+     return -1;
+  }
+
+  while (i < 50000) {
+    fprintf(fP, "%s ", word_list[rand() % 3000].string);
 
     i++;
   }
+  fclose(fP);
+
+  return 0;
 }
 
-void arrayFiller(char (*words)[WORD_LEN]) {
+int fillWords(word *word_list) {
+  FILE *fP;
+
+  fP = fopen("word-list.txt", "r");
+
+  if (fP == NULL) {
+     perror("Error opening file");
+     return -1;
+  }
+
   for (int i = 0; i < WORD_COUNT; i++) {
-    for (int j = 0; j < WORD_LEN; j++) {
-      words[i][j] = 'C';
-    }
+    fscanf(fP, "%s", word_list[i].string);
+  }
+
+  fclose(fP);
+  return 0;
+}
+
+void listPrinter(const word *word_list) {
+  for (int i = 0; i < WORD_COUNT; i++) {
+    printf("%4d | %s\n", i, word_list[i].string);
   }
 }
-
-/*
-int main (void) {
-   FILE *fp;
-   char str[60];
-   int i = 0;
-
-   fp = fopen("word-list.txt" , "r");
-   if(fp == NULL) {
-      perror("Error opening file");
-      return(-1);
-   }
-
-   while (i <= 3000) {
-     if( fgets (str, 60, fp)!=NULL ) {
-        fprintf(fP, "%s,\n", str);
-     }
-
-     i++;
-   }
-
-   return(0);
-}
-*/
