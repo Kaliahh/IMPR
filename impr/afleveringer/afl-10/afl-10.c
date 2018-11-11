@@ -17,29 +17,25 @@
 enum Values {Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King, Ace, Joker = 30};
 enum Suits {Clubs, Diamonds, Hearts, Spades, Jokers};
 
-/* Struct for et kort, typedeffed til card*/
+/* Struct for et kort, typedeffed til card */
 typedef struct card {
   int value;
   int suit;
 } card;
 
-/* Prototyper til printning af et sæt */
+/* Funktioner til printning af et sæt */
 void deckPrinter(const card *);
-char * suitIdentifier(int suit);
-char * valueIdentifier(int value);
+char * suitIdentifier(int);
+char * valueIdentifier(int);
 
-/* Prototyper til blanding af kort */
+/* Funktioner til blanding af kort */
 void shuffleDeck(card *);
-void swapSuit(card *, int, int);
-void swapValue(card *, int, int);
+void swap(card *, int, int);
 
-/* Prototyper til sortering af et sæt */
-void sortDeck(card *);
-int suitComp(const void *a, const void *b);
-int valueComp(const void *a, const void *b);
-
-void pressEnter(void);
+/* Utility funktioner */
+void pressEnter(char *);
 void deckFiller(card *);
+int qComp(const void *, const void *);
 
 int main(void) {
   card deck[DECK_SIZE];
@@ -49,29 +45,26 @@ int main(void) {
   srand((int) time(&t));
 
   /* Fylder et array af kort */
+  pressEnter("fill deck");
   deckFiller(deck);
-  printf("Fill deck: \n");
-  pressEnter();
   deckPrinter(deck);
 
   /* Blander et array af kort */
+  pressEnter("shuffle deck");
   shuffleDeck(deck);
-  printf("Shuffle deck: \n");
-  pressEnter();
   deckPrinter(deck);
 
   /* Sorterer et array af kort */
-  sortDeck(deck);
-  printf("Sort deck: \n");
-  pressEnter();
+  pressEnter("sort deck");
+  qsort(deck, DECK_SIZE, sizeof(card), qComp);
   deckPrinter(deck);
 
   return 0;
 }
 
 /* Venter, indtil brugeren trykker Enter */
-void pressEnter(void) {
-  printf("Press Enter to continue...");
+void pressEnter(char *command) {
+  printf("Press Enter to %s...", command);
   while (getchar() != '\n');
   printf("\n");
 }
@@ -80,15 +73,14 @@ void pressEnter(void) {
 void deckFiller(card *deck) {
   int sum = 0;
 
-  /* Går igennem hver kulør, og igennem hver værdi */
   for (int i = 0; i < NUM_OF_SUITS; i++) {
     for (int j = 0; j < NUM_OF_CARDS_IN_SUIT; j++) {
       deck[sum + j].suit = i;
       deck[sum + j].value = j;
     }
 
-    /* Startstedet for den næste tur gennem loopet,
-     * så det ikke bare er de samme 13 pladser der bliver fyldt igen */
+    /* Startstedet for den næste tur gennem loopet sættes op med 13,
+     * så det ikke bare er de samme pladser der bliver fyldt igen */
     sum += NUM_OF_CARDS_IN_SUIT;
   }
 
@@ -101,12 +93,12 @@ void deckFiller(card *deck) {
 
 /* Printer alle kort i sættet */
 void deckPrinter(const card *deck) {
-  char suit[10];
-  char value[10];
+  char card_suit[10];
+  char card_value[10];
 
   for (int i = 0; i < DECK_SIZE; i++) {
 
-    /* Checker for specialtilfældet at det er en joker,
+    /* Checker for specialtilfældet at kortet er en joker,
      * som jo ikke rigtig har en kulør */
     if (deck[i].value == Joker) {
       printf("%2d |      Joker\n", i + 1);
@@ -114,14 +106,13 @@ void deckPrinter(const card *deck) {
 
     /* Ellers bliver kulør og værdi identificeret, og printet */
     else {
-      strcpy(suit, suitIdentifier(deck[i].suit));
-      strcpy(value, valueIdentifier(deck[i].value));
-      printf("%2d | %5s of %-8s\n", i + 1, value, suit);
+      strcpy(card_suit, suitIdentifier(deck[i].suit));
+      strcpy(card_value, valueIdentifier(deck[i].value));
+      printf("%2d | %5s of %-8s\n", i + 1, card_value, card_suit);
     }
   }
 
-  /* Gør det lidt nemmere at læse output til terminalen */
-  printf("\n= = = = = = = = = = = = = = = = =\n\n");
+  printf("\n");
 }
 
 /* Returnerer en tekststreng med kuløreren for et kort */
@@ -162,51 +153,38 @@ void shuffleDeck(card *deck) {
     ranNum_1 = rand() % DECK_SIZE;
     ranNum_2 = rand() % DECK_SIZE;
 
-    swapSuit(deck, ranNum_1, ranNum_2);
-    swapValue(deck, ranNum_1, ranNum_2);
+    swap(deck, ranNum_1, ranNum_2);
   }
 }
 
-/* Ombytter to korts kulør */
-void swapSuit(card *deck, int a, int b) {
+/* Ombytter to korts værdi og kulør */
+void swap(card *deck, int a, int b) {
   card temp;
 
   temp.suit = deck[a].suit;
   deck[a].suit = deck[b].suit;
   deck[b].suit = temp.suit;
-}
-
-/* Ombytter to korts værdier */
-void swapValue(card *deck, int a, int b) {
-  card temp;
 
   temp.value = deck[a].value;
   deck[a].value = deck[b].value;
   deck[b].value = temp.value;
 }
 
-/* Sorterer et sæt af kort */
-void sortDeck(card *deck) {
+/* Sammenligningsfunktion til qsort */
+int qComp(const void *a, const void *b) {
+  card *p1 = (card*)a;
+  card *p2 = (card*)b;
 
-  /* Sorterer sættet efter kulør */
-  qsort(deck, DECK_SIZE, sizeof(card), suitComp);
-
-  /* Sorterer sættet efter værdi */
-  for (int i = 0; i < 4; i++) {
-    qsort(deck + NUM_OF_CARDS_IN_SUIT * i, NUM_OF_CARDS_IN_SUIT, sizeof(card), valueComp);
+  if (p1->suit - p2->suit < 0) {
+    return -1;
   }
-}
 
-/* Sammenligningsfunktion til qsort af kulør*/
-int suitComp(const void *a, const void *b) {
-  card *p1 = (card*)a;
-  card *p2 = (card*)b;
-  return ((p1->suit) - (p2->suit));
-}
+  else if (p1->suit - p2->suit > 0) {
+    return 1;
+  }
 
-/* Sammenligningsfunktion til qsort af værdi*/
-int valueComp(const void *a, const void *b) {
-  card *p1 = (card*)a;
-  card *p2 = (card*)b;
-  return ((p1->value) - (p2->value));
+  /* Hvis kuløren er den samme, bliver der sorteret efter værdi */
+  else {
+    return p1->value - p2->value;
+  }
 }
