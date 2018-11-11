@@ -148,8 +148,8 @@ char * valueIdentifier(int value) {
 void shuffleDeck(card *deck) {
   int ranNum_1, ranNum_2;
 
-  /* Ombytter 2 "tilfældigt" udvalgte kort. Dette gøres 1000 gange */
-  for (int i = 0; i < 1000; i++) {
+  /* Ombytter 2 "tilfældigt" udvalgte kort. Dette gøres 10000 gange */
+  for (int i = 0; i < 10000; i++) {
     ranNum_1 = rand() % DECK_SIZE;
     ranNum_2 = rand() % DECK_SIZE;
 
