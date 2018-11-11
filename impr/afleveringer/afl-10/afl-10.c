@@ -33,7 +33,7 @@ void shuffleDeck(card *);
 void swap(card *, int, int);
 
 /* Utility funktioner */
-void pressEnter(char *);
+void pressEnter(const char *);
 void deckFiller(card *);
 int qComp(const void *, const void *);
 
@@ -63,7 +63,7 @@ int main(void) {
 }
 
 /* Venter, indtil brugeren trykker Enter */
-void pressEnter(char *command) {
+void pressEnter(const char *command) {
   printf("Press Enter to %s...", command);
   while (getchar() != '\n');
   printf("\n");
@@ -93,9 +93,6 @@ void deckFiller(card *deck) {
 
 /* Printer alle kort i sættet */
 void deckPrinter(const card *deck) {
-  char card_suit[10];
-  char card_value[10];
-
   for (int i = 0; i < DECK_SIZE; i++) {
 
     /* Checker for specialtilfældet at kortet er en joker,
@@ -106,9 +103,7 @@ void deckPrinter(const card *deck) {
 
     /* Ellers bliver kulør og værdi identificeret, og printet */
     else {
-      strcpy(card_suit, suitIdentifier(deck[i].suit));
-      strcpy(card_value, valueIdentifier(deck[i].value));
-      printf("%2d | %5s of %-8s\n", i + 1, card_value, card_suit);
+      printf("%2d | %5s of %-8s\n", i + 1, valueIdentifier(deck[i].value), suitIdentifier(deck[i].suit));
     }
   }
 
@@ -146,14 +141,10 @@ char * valueIdentifier(int value) {
 
 /* Blander kortene i et sæt */
 void shuffleDeck(card *deck) {
-  int ranNum_1, ranNum_2;
 
   /* Ombytter 2 "tilfældigt" udvalgte kort. Dette gøres 10000 gange */
   for (int i = 0; i < 10000; i++) {
-    ranNum_1 = rand() % DECK_SIZE;
-    ranNum_2 = rand() % DECK_SIZE;
-
-    swap(deck, ranNum_1, ranNum_2);
+    swap(deck, rand() % DECK_SIZE, rand() % DECK_SIZE);
   }
 }
 
