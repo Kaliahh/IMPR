@@ -14,7 +14,7 @@
 # define NUM_OF_JOKERS 3
 
 /* Initialiserer en enumeration for alle kort, både værdi og farve */
-enum Values {Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King, Ace, Joker = 30};
+enum Values {Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King, Ace, Joker};
 enum Suits {Clubs, Diamonds, Hearts, Spades, Jokers};
 
 /* Struct for et kort, typedeffed til card */
@@ -116,8 +116,7 @@ char * suitIdentifier(int suit) {
          (suit == Diamonds) ? "Diamonds" :
          (suit == Hearts)   ? "Hearts"   :
          (suit == Spades)   ? "Spades"   :
-         (suit == Jokers)   ? "Jokers"   :
-         "Suit error";
+         "SUIT ERROR";
 }
 
 /* Returnerer tekststreng med værdien for et kort */
@@ -135,8 +134,7 @@ char * valueIdentifier(int value) {
          (value == Queen) ? "Queen" :
          (value == King)  ? "King"  :
          (value == Ace)   ? "Ace"   :
-         (value == Joker) ? "Joker" :
-         "Value error";
+         "VALUE ERROR";
 }
 
 /* Blander kortene i et sæt */
