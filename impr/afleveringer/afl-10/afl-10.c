@@ -13,28 +13,28 @@
 # define NUM_OF_SUITS 4
 # define NUM_OF_JOKERS 3
 
-/* Initialiserer en enumeration for alle kort, både værdi og farve */
+/* Deklarerer en enumeration for alle kort i et sæt, både værdi og farve */
 enum Values {Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King, Ace, Joker};
 enum Suits {Clubs, Diamonds, Hearts, Spades, Jokers};
 
-/* Struct for et kort, typedeffed til card */
+/* Definerer en struct for et kort, typedeffed til card */
 typedef struct card {
   int value;
   int suit;
 } card;
 
 /* Funktioner til printning af et sæt */
-void deckPrinter(const card *);
+void printDeck(const card *);
 char * suitIdentifier(int);
 char * valueIdentifier(int);
 
-/* Funktioner til blanding af kort */
+/* Funktioner til blanding af kort i et sæt */
 void shuffleDeck(card *);
 void swap(card *, int, int);
 
 /* Utility funktioner */
 void pressEnter(const char *);
-void deckFiller(card *);
+void createDeck(card *);
 int qComp(const void *, const void *);
 
 int main(void) {
@@ -44,20 +44,20 @@ int main(void) {
   time_t t;
   srand((int) time(&t));
 
-  /* Fylder et array af kort */
-  pressEnter("fill deck");
-  deckFiller(deck);
-  deckPrinter(deck);
+  /* Laver et array af kort */
+  pressEnter("create deck");
+  createDeck(deck);
+  printDeck(deck);
 
   /* Blander et array af kort */
   pressEnter("shuffle deck");
   shuffleDeck(deck);
-  deckPrinter(deck);
+  printDeck(deck);
 
   /* Sorterer et array af kort */
   pressEnter("sort deck");
   qsort(deck, DECK_SIZE, sizeof(card), qComp);
-  deckPrinter(deck);
+  printDeck(deck);
 
   return 0;
 }
@@ -69,8 +69,8 @@ void pressEnter(const char *command) {
   printf("\n");
 }
 
-/* Fylder et array af cards med kort */
-void deckFiller(card *deck) {
+/* Laver et array af kort */
+void createDeck(card *deck) {
   int sum = 0;
 
   for (int i = 0; i < NUM_OF_SUITS; i++) {
@@ -92,7 +92,7 @@ void deckFiller(card *deck) {
 }
 
 /* Printer alle kort i sættet */
-void deckPrinter(const card *deck) {
+void printDeck(const card *deck) {
   for (int i = 0; i < DECK_SIZE; i++) {
 
     /* Checker for specialtilfældet at kortet er en joker,

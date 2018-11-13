@@ -51,6 +51,7 @@ char *is_palindrome_iter(const char *array) {
       i++; j--;
     }
   }
+  return "Fejl\n";
 }
 
 /* Checker om en tekststreng er et palindrom, rekursivt */
@@ -75,5 +76,9 @@ char *is_palindrome_rec(const char *array) {
     strncpy(temp, array + 1, j - 1);
     temp[j] = '\0';
     return is_palindrome_rec(temp);
+  }
+
+  else {
+    return "Fejl\n";
   }
 }
