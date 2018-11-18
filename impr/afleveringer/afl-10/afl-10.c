@@ -150,13 +150,9 @@ void shuffleDeck(card *deck) {
 void swap(card *deck, int a, int b) {
   card temp;
 
-  temp.suit = deck[a].suit;
-  deck[a].suit = deck[b].suit;
-  deck[b].suit = temp.suit;
-
-  temp.value = deck[a].value;
-  deck[a].value = deck[b].value;
-  deck[b].value = temp.value;
+  temp = deck[a];
+  deck[a] = deck[b];
+  deck[b] = temp;
 }
 
 /* Sammenligningsfunktion til qsort */
