@@ -14,13 +14,14 @@
 # define MAX_NAME_LEN 30
 # define MAX_ABREV_LEN 4
 # define MAX_TIME 10
-# define MAX_NUM_RESULTS 800
+# define SECONDS_PER_HOUR 3600
+# define SECONDS_PER_MINUTE 60
 
 /* En struct for en rytters resultat */
 typedef struct {
   char race[MAX_NAME_LEN];
   char full_name[2 * MAX_NAME_LEN];
-  char sur_name[MAX_NAME_LEN];
+  char surname[MAX_NAME_LEN];
   int age;
   char team[MAX_ABREV_LEN];
   char nation[MAX_ABREV_LEN];
@@ -31,37 +32,52 @@ typedef struct {
 
 /* En struct for en enkelt rytters point og efternavn */
 typedef struct {
-  char sur_name[MAX_NAME_LEN];
+  char surname[MAX_NAME_LEN];
   int points;
 
-} rider_points_sc;
+} rider_info_sc;
 
-int createArrayOfResults(rider_result_sc *);
-void findSurname(rider_result_sc *, int);
-int findNumOfResults(FILE *);
+rider_result_sc *createArrayResults(const int, FILE *);
+rider_info_sc *createArraySurnamePoints(const int, const rider_result_sc *);
+void findSurname(rider_result_sc *, const int);
+int findNumResults(FILE *);
+int calculatePoints(const char *, const int, rider_info_sc *);
+int calculateTime(const char *);
+int findAmountRiders(const int, const rider_result_sc *);
 
 int main(void) {
 
-  int fileOpened = 0;
-
+  int num_of_results = 0;
   rider_result_sc *results;
+  rider_info_sc *riders;
+  FILE *fP;
 
-  /* Tager resultaterne fra "cykelloeb", og lægger over i results arrayet.
-   * fileOpened bliver tildelt -1 hvis filen ikke kunne åbnes */
-  fileOpened = createArrayOfResults(results);
+  /* Åbner filen */
+  fP = fopen("cykelloeb", "r");
 
-  /* Hvis filen med cykelløb ikke kunne åbnes, afsluttes programmet */
-  if (fileOpened == -1) {
-    perror("Error opening file");
-    return -1;
+  /* Checker om filen blev åbnet */
+  if (fP == NULL) {
+    perror("Error when opening file");
+     return -1;
   }
 
+  /* Finder antallet af resultater */
+  num_of_results = findNumResults(fP);
+
+  /* Tager resultaterne fra "cykelloeb", og lægger over i results arrayet */
+  results = createArrayResults(num_of_results, fP);
+
+  riders = createArraySurnamePoints(num_of_results, results);
+
+  /* Frigiver hukommelse fra results arrayet, og lukker filpointeren fP */
   free(results);
+  fclose(fP);
 
   return 0;
 }
 
-int findNumOfResults(FILE *fP) {
+/* Finder antallet af resultater */
+int findNumResults(FILE *fP) {
   char dump[200];
   int num_of_results = 0;
 
@@ -70,28 +86,19 @@ int findNumOfResults(FILE *fP) {
     num_of_results++;
   }
 
+  /* Sætter filpointeren tilbage til starten af filen */
+  rewind(fP);
+
   return num_of_results - 1;
 }
 
 /* Scanner resultaterne fra "cykelloeb" ind i et array */
-int createArrayOfResults (rider_result_sc *results) {
+rider_result_sc *createArrayResults(const int num_of_results, FILE *fP) {
   int result_index = 0;
-  int num_of_results = 0;
-  FILE *fP;
 
-  fP = fopen("cykelloeb", "r");
-
-  /* Checker om filen blev åbnet */
-  if (fP == NULL) {
-     return -1;
-  }
-
-  num_of_results = findNumOfResults(fP);
+  rider_result_sc *results;
 
   results = malloc(num_of_results * sizeof(rider_result_sc));
-
-  /* Sætter filpointeren tilbage til starten af filen */
-  rewind(fP);
 
   /* Så længe filpointeren ikke er kommet til slutningen af filen,
    * scannes resultaterne over i de forskellige dele af structen */
@@ -111,9 +118,12 @@ int createArrayOfResults (rider_result_sc *results) {
     result_index++;
   }
 
-  fclose(fP);
-  return 0;
+  /* Sætter filpointeren tilbage til starten af filen */
+  rewind(fP);
+
+  return results;
 }
+
 
 /* Finder rytterens efternavn */
 void findSurname(rider_result_sc *results, int result_index) {
@@ -125,7 +135,7 @@ void findSurname(rider_result_sc *results, int result_index) {
       name_index += 2; /* Den skal hen over mellemrummet og det lille bogstav */
 
       /* Kopierer efternavnet fra det fulde navn */
-      strcpy(results[result_index].sur_name, results[result_index].full_name + name_index);
+      strcpy(results[result_index].surname, results[result_index].full_name + name_index);
       SENTINEL = 1;
     }
 
@@ -135,22 +145,78 @@ void findSurname(rider_result_sc *results, int result_index) {
   }
 }
 
-/* Udregn point */
-/*
-int calculatePoints(rider_result_sc *results, rider_points_sc *points) {
+/* KUNNE BARE LÆGGES OVER I DEN STORE STRUCT */
+
+/* Returnerer et array med rytterens efternavn navn og samlede antal point de har */
+rider_info_sc *createArraySurnamePoints(const int num_of_results, const rider_result_sc *results) {
+  rider_info_sc *riders;
+  int individual_rider_amount = 0;
+  int rider_index = 0;
+
+  individual_rider_amount = findAmountRiders(num_of_results, results);
+
+  printf("%d\n", individual_rider_amount);
+
+  riders = malloc(individual_rider_amount * sizeof(rider_info_sc));
+
+  for (rider_index = 0; rider_index < individual_rider_amount; rider_index++) {
+    if (riders[rider_index].points == 0) {
+      calculatePoints(riders[rider_index].surname, individual_rider_amount, riders);
+    }
+  }
+
+  return riders;
+}
+
+/* Finder antallet af individuelle ryttere, returnerer antallet */
+int findAmountRiders(const int num_of_results, const rider_result_sc *results) {
   int result_index = 0;
+  int check_index = 0;
+  int individual_rider_amount = 0;
+  int SENTINEL = 0;
 
-  for (result_index = 0; )
+  /* Gennemgår result arrayet, og tjekker alle resultater op til resultat indekset.
+   * Hvis den finder en rytter der allerede er talt, springes denne over */
+  for (result_index = 0; result_index < num_of_results; result_index++) {
+    for (check_index = 0; check_index < result_index; check_index++) {
+      if (strcmp(results[result_index].surname, results[check_index].surname) == 0) {
+        SENTINEL++;
+        printf("%3d | %s\n", result_index + 1, results[result_index].surname);
+      }
+    }
+    /* Hvis der ikke blev fundet nogen gengangere, er denne rytter ikke blevet talt */
+    if (SENTINEL == 0) {
+      individual_rider_amount++;
+    }
+    /* Ellers nulstilles flaget, klar til næste resultat */
+    else {
+      SENTINEL = 0;
+    }
+  }
+
+  return individual_rider_amount;
 }
-*/
 
-/* Udregn tid */
-/*
-int calculateTime(rider_points_sc result) {
+/* Udregn point */
+int calculatePoints(const char *rider_surname, const int individual_rider_amount, rider_info_sc *riders) {
+  int points = 0;
+  int rider_index = 0;
 
+  for (rider_index = 0; rider_index < )
+
+
+  return 0;
 }
-*/
 
+/* Udregn tiden for et resultat, returnerer antallet af sekunder*/
+int calculateTime(const char *result) {
+  int hours = 0;
+  int minutes = 0;
+  int seconds = 0;
+
+  sscanf(result, "%d:%d:%d", &hours, &minutes, &seconds);
+  return (hours * SECONDS_PER_HOUR + minutes * SECONDS_PER_MINUTE + seconds);
+}
 
 /* Find og udskriv alle italienske cykelryttere over 30 år */
 
