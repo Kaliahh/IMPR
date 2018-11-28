@@ -63,6 +63,8 @@ enum final_position {OTL = VERY_BIG_NUMBER, DNF};
 
 /* Prototyper */
 /* Array af ryttere */
+int printAll(FILE *);
+int menu(FILE *);
 rider_info_sc *createArrayRiders(FILE *, const int);
 int findNumResults(FILE *);
 int findRiders(FILE *, name_sc *, const int);
@@ -87,26 +89,39 @@ void printFastestRider(const char *, const char *);
 double calculateAvgAge(rider_info_sc *, const int);
 
 
-int main(void) {
-  int num_of_results = 0;
-  int rider_amount = 0;
-  int nation_rider_amount = 0;
-  rider_info_sc *riders;
-  rider_info_sc *danish_riders;
-  name_sc *name_dump;
+int main(int argc, char *argv[]) {
   FILE *fP;
-  char fast_rider_time[MAX_TIME_LEN];
-  char fast_rider[2 * MAX_NAME_LEN] = "Hello";
-
 
   /* Åbner filen */
   fP = fopen("cykelloeb", "r");
 
   /* Checker om filen blev åbnet */
   if (fP == NULL) {
-    perror("Fejl ved åbning af filen");
-     return -1;
+    perror("Error when opening file");
+    return -1;
   }
+
+  /* Hvis programparametre "--print" blev brugt, printes alle resultater med det samme */
+  if (argc == 2 && strcmp(argv[1], "--print") == 0) {
+    printAll(fP);
+  }
+  else {
+    menu(fP);
+  }
+
+  fclose(fP);
+  return 0;
+}
+
+int printAll(FILE *fP) {
+  int num_of_results = 0;
+  int rider_amount = 0;
+  int nation_rider_amount = 0;
+  rider_info_sc *riders;
+  rider_info_sc *danish_riders;
+  name_sc *name_dump;
+  char fast_rider_time[MAX_TIME_LEN];
+  char fast_rider[2 * MAX_NAME_LEN];
 
   /* Finder antallet af resultater */
   num_of_results = findNumResults(fP);
@@ -149,7 +164,94 @@ int main(void) {
   /* Frigiver hukommelse fra results arrayet, og lukker filpointeren fP */
   free(riders);
   free(name_dump);
-  fclose(fP);
+
+  return 0;
+}
+
+int menu(FILE *fP) {
+
+  int num_of_results = 0;
+  int rider_amount = 0;
+  int nation_rider_amount = 0;
+  rider_info_sc *riders;
+  rider_info_sc *danish_riders;
+  name_sc *name_dump;
+  char fast_rider_time[MAX_TIME_LEN];
+  char fast_rider[2 * MAX_NAME_LEN];
+  int choice = 0;
+
+  /* Finder antallet af resultater */
+  num_of_results = findNumResults(fP);
+
+  /* Laver et array af ryttere */
+  riders = createArrayRiders(fP, num_of_results);
+
+
+  /* Allokerer plads til et array der kan smides væk,
+   * finder antallet af individuelle ryttere */
+  name_dump = malloc(num_of_results * sizeof(name_sc));
+  rider_amount = findRiders(fP, name_dump, num_of_results);
+
+  printf("\n####################  MENU  ####################\n\n");
+  printf("Vælg en opgave: \n");
+  printf("1: Opgave 1 - Italienere over 30\n");
+  printf("2: Opgave 2 - Danskere der har deltaget i et løb\n");
+  printf("3: Opgave 3 - Top ti ryttere\n");
+  printf("4: Opgave 4 - Hurtigste rytter\n");
+  printf("5: Opgave 5 - Gennemsnitsalderen\n");
+  printf("6: Afslut\n\n");
+  printf("Indtast et tal mellem 1 og 6: ");
+  scanf(" %d", &choice);
+  printf("_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n\n");
+
+  if (choice == 6) {
+    printf("Farvel!\n");
+    return 0;
+  }
+
+  else if (choice == 1) {
+    /* Printer alle løbsresultater hvor rytteren er italiensk og over 30 år gammel */
+    printf("Italienere over 30: \n");
+    printRiders(riders, rider_amount, "ITA", 30);
+    printf("\n\n");
+  }
+
+  else if (choice == 2) {
+    /* Laver et array af danske ryttere, der har en position */
+    danish_riders = createArrayRidersOfNation(riders, rider_amount, "DEN", &nation_rider_amount);
+    printf("Danskere der har deltaget i et løb: \n");
+    printRiders(danish_riders, nation_rider_amount, "DEN", 0);
+    printf("\n\n");
+  }
+
+  else if (choice == 3) {
+    /* Finder og printer de ti spillere der har fået flest point */
+    printf("Top ti ryttere: \n");
+    findTopTen(riders, rider_amount);
+    printf("\n\n");
+  }
+
+  else if (choice == 4) {
+    /* Finder den rytter der har den mindste køretid i Paris Roubaix og Amstel Gold Race */
+    findFastestRider(riders, rider_amount, fast_rider, fast_rider_time);
+    printFastestRider(fast_rider, fast_rider_time);
+    printf("\n\n");
+  }
+
+  else if (choice == 5) {
+    /* Finder gennemsnitsalderen af alle de ryttere der har opnået en top-ti plads i et eller flere løb */
+    printf("Gennemsnitsalderen for ryttere med en top-ti plads er %0.4lf\n", calculateAvgAge(riders, rider_amount));
+    printf("\n\n");
+  }
+
+  rewind(fP);
+  menu(fP);
+
+
+
+  /* Frigiver hukommelse fra results arrayet, og lukker filpointeren fP */
+  free(riders);
+  free(name_dump);
 
   return 0;
 }
