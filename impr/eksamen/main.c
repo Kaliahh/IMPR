@@ -15,7 +15,7 @@
 # define MAX_ABREV_LEN 4
 # define MAX_TIME_LEN 10
 # define NUM_OF_RACES 4
-# define MAX_RACE_NAME_LEN 20
+# define MAX_RACE_NAME_LEN 25
 # define SECONDS_PER_WEEK 86400
 # define SECONDS_PER_HOUR 3600
 # define SECONDS_PER_MINUTE 60
@@ -49,7 +49,7 @@ typedef struct {
   char name[2 * MAX_NAME_LEN];
 } name_sc;
 
-/* En struct for hvert løb */
+/* En struct for antallet af ryttere i hvert løb */
 typedef struct {
   int Paris;
   int Amstel;
@@ -62,31 +62,39 @@ typedef struct {
 enum final_position {OTL = VERY_BIG_NUMBER, DNF};
 
 /* Prototyper */
-/* Array af ryttere */
 int printAll(FILE *);
 int menu(FILE *);
-rider_info_sc *createArrayRiders(FILE *, const int);
 int findNumResults(FILE *);
-int findRiders(FILE *, name_sc *, const int);
-void findSurname(const char *, char *);
-int matchRiderName(const char *, const name_sc *, const int);
-int findRaceIndex(const char *);
-int calculatePosition(char *);
+rider_info_sc *createArrayRiders(FILE *, const int);
+int findRiders(FILE *, const int, name_sc *);
+int checkRider(const name_sc *, const char *, const int);
+int qCompNames(const void *a, const void *b);
 races_sc raceCount(FILE *);
-int calculatePoints(const int, const races_sc, const char *);
-int calculateTime(const char *);
+int binaryMatchRiderName(const char *, const name_sc *, const int, const int);
 void addRider(rider_info_sc *, FILE *, const int, races_sc, const char *, const char *);
 void updateRider(rider_info_sc *, FILE *, const int, races_sc, const char *);
+void findSurname(const char *, char *);
+int findRaceIndex(const char *);
+int calculateTime(const char *);
+int calculatePosition(const char *);
+int calculatePoints(const int, const races_sc, const char *);
 
-/* Opgaver */
-void printRiders(rider_info_sc *, const int, const char *, const double);
+
+/* Opgave 1 */
+void printRiders(const rider_info_sc *, const int, const char *, const double);
+/* Opgave 2 */
 rider_info_sc *createArrayRidersOfNation(const rider_info_sc *, const int, const char *, int *);
 int countRidersOfNation(const rider_info_sc *, const int, const char *);
+/* Opgave 3 */
 void findTopTen(rider_info_sc *, const int);
-int qComp(const void *a, const void *b);
+int qCompAvg(const void *a, const void *b);
+/* Opgave 4 */
 void findFastestRider(const rider_info_sc *, const int, char *, char *);
 void printFastestRider(const char *, const char *);
-double calculateAvgAge(rider_info_sc *, const int);
+/* Opgave 5 */
+double calculateAvgAge(const rider_info_sc *, const int);
+int positionChecker(const rider_info_sc *, const int);
+
 
 
 int main(int argc, char *argv[]) {
@@ -113,6 +121,7 @@ int main(int argc, char *argv[]) {
   return 0;
 }
 
+/* Printer alle resultater */
 int printAll(FILE *fP) {
   int num_of_results = 0;
   int rider_amount = 0;
@@ -133,7 +142,7 @@ int printAll(FILE *fP) {
   /* Allokerer plads til et array der kan smides væk,
    * finder antallet af individuelle ryttere */
   name_dump = malloc(num_of_results * sizeof(name_sc));
-  rider_amount = findRiders(fP, name_dump, num_of_results);
+  rider_amount = findRiders(fP, num_of_results, name_dump);
 
 
   /* Printer alle løbsresultater hvor rytteren er italiensk og over 30 år gammel */
@@ -168,6 +177,7 @@ int printAll(FILE *fP) {
   return 0;
 }
 
+/* En menu, så brugeren selv kan vælge hvad der skal udregnes og printes */
 int menu(FILE *fP) {
 
   int num_of_results = 0;
@@ -190,7 +200,7 @@ int menu(FILE *fP) {
   /* Allokerer plads til et array der kan smides væk,
    * finder antallet af individuelle ryttere */
   name_dump = malloc(num_of_results * sizeof(name_sc));
-  rider_amount = findRiders(fP, name_dump, num_of_results);
+  rider_amount = findRiders(fP, num_of_results, name_dump);
 
   printf("\n####################  MENU  ####################\n\n");
   printf("Vælg en opgave: \n");
@@ -244,16 +254,34 @@ int menu(FILE *fP) {
     printf("\n\n");
   }
 
+  else {
+    printf("Ugyldigt indput\n");
+  }
+
   rewind(fP);
   menu(fP);
-
-
 
   /* Frigiver hukommelse fra results arrayet, og lukker filpointeren fP */
   free(riders);
   free(name_dump);
 
   return 0;
+}
+
+/* Finder antallet af resultater */
+int findNumResults(FILE *fP) {
+  char dump[200];
+  int num_of_results = 0;
+
+  while (feof(fP) == 0) {
+    fgets(dump, 200, fP);
+    num_of_results++;
+  }
+
+  rewind(fP);
+
+  /* Da den sidste linje tages med 2 gange, trækkes én fra */
+  return num_of_results - 1;
 }
 
 /* Laver et array af ryttere, med deres resultater i de forskellige løb, og alt anden information */
@@ -269,7 +297,10 @@ rider_info_sc *createArrayRiders(FILE *fP, const int num_of_results) {
   char race_name[MAX_NAME_LEN];
 
   /* Finder antallet af ryttere */
-  rider_amount = findRiders(fP, names_list, num_of_results);
+  rider_amount = findRiders(fP, num_of_results, names_list);
+
+  /* Sorterer navnelisten, klar til binær søgning */
+  qsort(names_list, rider_amount, sizeof(name_sc), qCompNames);
 
   riders = malloc(rider_amount * sizeof(rider_info_sc));
 
@@ -281,7 +312,7 @@ rider_info_sc *createArrayRiders(FILE *fP, const int num_of_results) {
     fscanf(fP, " %s \" %[-a-zA-Z' ] \"", race_name, temp_name);
 
     /* Finder det sted i rider arrayet hvor denne rytter har plads */
-    check_index = matchRiderName(temp_name, names_list, rider_amount);
+    check_index = binaryMatchRiderName(temp_name, names_list, 0, rider_amount - 1);
 
     /* Hvis rytteren ikke blev fundet, meldes fejlen */
     if (check_index == -1) {
@@ -300,22 +331,120 @@ rider_info_sc *createArrayRiders(FILE *fP, const int num_of_results) {
     }
   }
 
-  /*
-  for (rider_index = 0; rider_index < rider_amount; rider_index++) {
-    printf("%3d | %-25s | %2d\n", rider_index, riders[rider_index].full_name, riders[rider_index].points_sum);
-    for (result_index = 0; result_index < NUM_OF_RACES; result_index++) {
-      printf("%-30s : %6d %6d %2d\n",
-             riders[rider_index].result[result_index].race,
-             riders[rider_index].result[result_index].position,
-             riders[rider_index].result[result_index].seconds,
-             riders[rider_index].result[result_index].points);
-    }
-    printf("- - - - - - - - - - - - - - - - - - - - - - \n");
-  }
-  */
-
   rewind(fP);
   return riders;
+}
+
+/* Finder mængden af individuelle ryttere, og laver en sorteret liste over deres navne */
+int findRiders(FILE *fP, const int num_of_results, name_sc *names_list) {
+  char temp[200];
+  char temp_name[60];
+
+  int rider_amount = 0;
+  int result_index = 0;
+  int SENTINEL = 0;
+
+  /* Gennemgår alle resultaterne, og finder de enkelte ryttere */
+  for (result_index = 0; result_index < num_of_results; result_index++) {
+    fgets(temp, 200, fP);
+    sscanf(temp + MAX_RACE_NAME_LEN, " \" %[-a-zA-Z' ]", temp_name);
+
+    SENTINEL = checkRider(names_list, temp_name, rider_amount);
+
+    /* Hvis rytteren ikke allerede var blevet talt,
+     * tælles han med og tilføjes til listen af navne*/
+    if (SENTINEL == 0) {
+      strcpy(names_list[rider_amount].name, temp_name);
+      rider_amount++;
+    }
+    else {
+      SENTINEL = 0;
+    }
+  }
+
+  rewind(fP);
+  return rider_amount;
+}
+
+/* Checker om en rytter allerede er i listen af navne */
+int checkRider(const name_sc *names_list, const char *temp_name, const int rider_amount) {
+  int name_index = 0;
+
+  /* Hvis rytteren allerede er blevet talt springes han over */
+  for (name_index = 0; name_index < rider_amount; name_index++) {
+    if (strcmp(temp_name, names_list[name_index].name) == 0) {
+      return 1;
+    }
+  }
+  return 0;
+}
+
+/* Sammenligningsfunktion til qsort af navne */
+int qCompNames(const void *a, const void *b) {
+  name_sc *p1 = (name_sc*)a;
+  name_sc *p2 = (name_sc*)b;
+
+  return strcmp(p1->name, p2->name);
+}
+
+/* Tæller antallet af ryttere i hvert ræs */
+races_sc raceCount(FILE *fP) {
+  races_sc riders_in_race_count;
+  int result_index = 0;
+  char temp[200];
+  char race_name[MAX_RACE_NAME_LEN];
+
+  /* Nulstiller antallet af resultater i structen */
+  riders_in_race_count.Paris = 0;
+  riders_in_race_count.Amstel = 0;
+  riders_in_race_count.LaFleche = 0;
+  riders_in_race_count.Liege = 0;
+
+  while (feof(fP) == 0) {
+    fgets(temp, 200, fP);
+    sscanf(temp, " %s \"", race_name);
+
+    if (strcmp(race_name, "ParisRoubaix") == 0) {
+      riders_in_race_count.Paris++;
+    }
+    else if (strcmp(race_name, "AmstelGoldRace") == 0) {
+      riders_in_race_count.Amstel++;
+    }
+    else if (strcmp(race_name, "LaFlecheWallonne") == 0) {
+      riders_in_race_count.LaFleche++;
+    }
+    else {
+      riders_in_race_count.Liege++;
+    }
+    result_index++;
+  }
+
+  /* Da LiegeBastogneLiege er den sidste i filen, og der bliver talt en ekstra med, trækkes én fra */
+  riders_in_race_count.Liege--;
+
+  rewind(fP);
+  return riders_in_race_count;
+}
+
+/* Finder en rytters indeks ud fra hans navn. Inspireret af DTG lektion 18 */
+int binaryMatchRiderName(const char *temp_name, const name_sc *names_list, const int lower, const int upper) {
+  int middle = (lower + upper) / 2;
+
+  if (strcmp(temp_name, names_list[middle].name) == 0) {
+    return middle;
+  }
+  /* Hvis navnet der søges efter er mindre end navnet der kigges på,
+   * må navnet ligge i den nedre halvdel */
+  else if (strcmp(temp_name, names_list[middle].name) < 0 && lower < middle) {
+    return binaryMatchRiderName(temp_name, names_list, lower, middle - 1);
+  }
+  /* Hvis navnet der søges efter er større end navnet der kigges på,
+   * må navnet ligger i den øvre halvdel */
+  else if (strcmp(temp_name, names_list[middle].name) > 0 && middle < upper) {
+    return binaryMatchRiderName(temp_name, names_list, middle + 1, upper);
+  }
+  /* Hvis rytteren ikke kunne findes, returneres -1 */
+  return -1;
 }
 
 /* Tilføjer en rytter til rider arryet */
@@ -370,95 +499,6 @@ void updateRider(rider_info_sc *riders, FILE *fP, const int check_index, races_s
   riders[check_index].points_sum += riders[check_index].result[race_index].points;
 }
 
-/* Udregner positionen for en rytter i et løb */
-int calculatePosition(char *position_str) {
-  int position = 0;
-
-  if (strcmp(position_str, "DNF") == 0) {
-    return DNF;
-  }
-  else if (strcmp(position_str, "OTL") == 0) {
-    return OTL;
-  }
-  else {
-    sscanf(position_str, "%d", &position);
-  }
-
-  return position;
-}
-
-/* Finder indekset løbet har i rytternes result array */
-int findRaceIndex(const char *race_name) {
-
-  return (strcmp(race_name, "ParisRoubaix") == 0)     ? 0 :
-         (strcmp(race_name, "AmstelGoldRace") == 0)   ? 1 :
-         (strcmp(race_name, "LaFlecheWallonne") == 0) ? 2 : 3;
-}
-
-/* Finder en rytters indeks ud fra hans navn */
-int matchRiderName(const char *temp_name, const name_sc *names_list, const int rider_amount) {
-  int name_index = 0;
-  for (name_index = 0; name_index < rider_amount; name_index++) {
-    if (strcmp(temp_name, names_list[name_index].name) == 0) {
-      return name_index;
-    }
-  }
-  return -1;
-}
-
-/* Finder mængden af individuelle ryttere, og laver en liste over deres navne */
-int findRiders(FILE *fP, name_sc *names_list, const int num_of_results) {
-  char temp[200];
-  char temp_name[60];
-
-  int rider_amount = 0;
-  int result_index = 0;
-  int name_index = 0;
-  int SENTINEL = 0;
-
-  /* Gennemgår alle resultaterne, og finder de enkelte ryttere */
-  for (result_index = 0; result_index < num_of_results; result_index++) {
-    fgets(temp, 200, fP);
-    sscanf(temp + MAX_RACE_NAME_LEN, " \" %[-a-zA-Z' ]", temp_name);
-
-    /* Hvis rytteren allerede er blevet talt springes han over */
-    for (name_index = 0; name_index < result_index; name_index++) {
-      if (strcmp(temp_name, names_list[name_index].name) == 0) {
-        SENTINEL = 1;
-      }
-    }
-
-    /* Hvis rytteren ikke allerede var blevet talt,
-     * tælles han med og tilføjes til listen af navne*/
-    if (SENTINEL == 0) {
-      strcpy(names_list[rider_amount].name, temp_name);
-      rider_amount++;
-    }
-    else {
-      SENTINEL = 0;
-    }
-  }
-
-  rewind(fP);
-  return rider_amount;
-}
-
-/* Finder antallet af resultater */
-int findNumResults(FILE *fP) {
-  char dump[200];
-  int num_of_results = 0;
-
-  while (feof(fP) == 0) {
-    fgets(dump, 200, fP);
-    num_of_results++;
-  }
-
-  rewind(fP);
-
-  /* Da den sidste linje tages med 2 gange, trækkes én fra */
-  return num_of_results - 1;
-}
-
 /* Finder en rytters efternavn */
 void findSurname(const char *full_name, char *surname) {
   int name_index = MAX_NAME_LEN;
@@ -479,6 +519,14 @@ void findSurname(const char *full_name, char *surname) {
   }
 }
 
+/* Finder indekset løbet har i rytternes result array */
+int findRaceIndex(const char *race_name) {
+
+  return (strcmp(race_name, "ParisRoubaix") == 0)     ? 0 :
+         (strcmp(race_name, "AmstelGoldRace") == 0)   ? 1 :
+         (strcmp(race_name, "LaFlecheWallonne") == 0) ? 2 : 3;
+}
+
 /* Udregner tiden for et resultat, returnerer antallet af sekunder*/
 int calculateTime(const char *time) {
   int hours = 0;
@@ -496,40 +544,21 @@ int calculateTime(const char *time) {
   return (hours * SECONDS_PER_HOUR + minutes * SECONDS_PER_MINUTE + seconds);
 }
 
-/* Tæller antallet af ryttere i hvert ræs */
-races_sc raceCount(FILE *fP) {
-  races_sc riders_in_race_count;
-  int result_index = 0;
-  char temp[200];
-  char race_name[MAX_RACE_NAME_LEN];
+/* Udregner positionen for en rytter i et løb */
+int calculatePosition(const char *position_str) {
+  int position = 0;
 
-  /* Nulstiller antallet af resultater i structen */
-  riders_in_race_count.Paris = 0;
-  riders_in_race_count.Amstel = 0;
-  riders_in_race_count.LaFleche = 0;
-  riders_in_race_count.Liege = 0;
-
-  while (feof(fP) == 0) {
-    fgets(temp, 200, fP);
-    sscanf(temp, " %s \"", race_name);
-
-    if (strcmp(race_name, "ParisRoubaix") == 0) {
-      riders_in_race_count.Paris++;
-    }
-    else if (strcmp(race_name, "AmstelGoldRace") == 0) {
-      riders_in_race_count.Amstel++;
-    }
-    else if (strcmp(race_name, "LaFlecheWallonne") == 0) {
-      riders_in_race_count.LaFleche++;
-    }
-    else {
-      riders_in_race_count.Liege++;
-    }
-    result_index++;
+  if (strcmp(position_str, "DNF") == 0) {
+    return DNF;
+  }
+  else if (strcmp(position_str, "OTL") == 0) {
+    return OTL;
+  }
+  else {
+    sscanf(position_str, "%d", &position);
   }
 
-  rewind(fP);
-  return riders_in_race_count;
+  return position;
 }
 
 /* Udregn point */
@@ -570,11 +599,9 @@ int calculatePoints(const int position, const races_sc riders_in_race_count, con
 
 
 
-
-
 /* Opgave 1 */
 /* Finder og udskriver alle cykelryttere af en bestem nationalitet over en bestemt alder */
-void printRiders(rider_info_sc *riders, const int rider_amount, const char *nation, const double age) {
+void printRiders(const rider_info_sc *riders, const int rider_amount, const char *nation, const double age) {
   int rider_index = 0;
   int race_index = 0;
 
@@ -582,6 +609,7 @@ void printRiders(rider_info_sc *riders, const int rider_amount, const char *nati
     if (strcmp(riders[rider_index].nation, nation) == 0 && riders[rider_index].age > age) {
       printf("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n\n");
       printf("Navn: %-30s\n", riders[rider_index].full_name);
+      /* Checker om rytteren har deltaget i hver løb, og om hans position var over eller under OTL */
       for (race_index = 0; race_index < NUM_OF_RACES; race_index++) {
         if (isupper(riders[rider_index].result[race_index].race[0]) != 0 && riders[rider_index].result[race_index].position < OTL) {
           printf("%-25s | Points: %2d | Position: %3d | Tid: %s\n",
@@ -648,7 +676,7 @@ int countRidersOfNation(const rider_info_sc *riders, const int rider_amount, con
 void findTopTen(rider_info_sc *riders, const int rider_amount) {
   int rider_index = 0;
 
-  qsort(riders, rider_amount, sizeof(rider_info_sc), qComp);
+  qsort(riders, rider_amount, sizeof(rider_info_sc), qCompAvg);
 
   for (rider_index = 0; rider_index < 10; rider_index++) {
     printf("%2d | %-28s : %d point\n", rider_index + 1, riders[rider_index].full_name, riders[rider_index].points_sum);
@@ -656,21 +684,16 @@ void findTopTen(rider_info_sc *riders, const int rider_amount) {
 }
 
 /* Sammenligningsfunktion til qsort */
-int qComp(const void *a, const void *b) {
+int qCompAvg(const void *a, const void *b) {
   rider_info_sc *p1 = (rider_info_sc*)a;
   rider_info_sc *p2 = (rider_info_sc*)b;
 
-  if (p1->points_sum - p2->points_sum < 0) {
-    return 1;
-  }
-
-  else if (p1->points_sum - p2->points_sum > 0) {
-    return -1;
-  }
-
-  /* Hvis kuløren er den samme, bliver der sorteret efter værdi */
-  else {
+  if ((p1->points_sum - p2->points_sum) == 0) {
     return strcmp(p1->surname, p2->surname);
+  }
+
+  else {
+    return (p2->points_sum - p1->points_sum);
   }
 }
 
@@ -708,25 +731,32 @@ void printFastestRider(const char *fast_rider, const char *fast_rider_time) {
 
 /* Opgave 5 */
 /* Beregn gennemsnitsalderen blandt de ryttere som har opnået en top ti placering i et eller flere løb */
-double calculateAvgAge(rider_info_sc *riders, const int rider_amount) {
+double calculateAvgAge(const rider_info_sc *riders, const int rider_amount) {
   int rider_index = 0;
-  int race_index = 0;
-  int SENTINEL = 0;
+  int position_check = 0;
   double age_sum = 0.0;
   double num_of_riders = 0.0;
 
   for (rider_index = 0; rider_index < rider_amount; rider_index++) {
-    for (race_index = 0; race_index < NUM_OF_RACES; race_index++) {
-      if (riders[rider_index].result[race_index].position > 0 && riders[rider_index].result[race_index].position <= 10) {
-        SENTINEL = 1;
-      }
-    }
-    if (SENTINEL == 1) {
+    position_check = positionChecker(riders, rider_index);
+
+    if (position_check == 1) {
       num_of_riders++;
       age_sum += riders[rider_index].age;
-      SENTINEL = 0;
+      position_check = 0;
     }
   }
 
   return age_sum / num_of_riders;
+}
+
+int positionChecker(const rider_info_sc *riders, const int rider_index) {
+  int race_index = 0;
+
+  for (race_index = 0; race_index < NUM_OF_RACES; race_index++) {
+    if (riders[rider_index].result[race_index].position > 0 && riders[rider_index].result[race_index].position <= 10) {
+      return 1;
+    }
+  }
+  return 0;
 }
