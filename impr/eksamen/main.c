@@ -72,7 +72,6 @@ int qCompNames(const void *a, const void *b);
 races_sc raceCount(FILE *);
 int binaryMatchRiderName(const char *, const name_sc *, const int, const int);
 void addRider(rider_info_sc *, FILE *, const int, races_sc, const char *, const char *);
-void updateRider(rider_info_sc *, FILE *, const int, races_sc, const char *);
 void findSurname(const char *, char *);
 int findRaceIndex(const char *);
 int calculateTime(const char *);
@@ -320,14 +319,9 @@ rider_info_sc *createArrayRiders(FILE *fP, const int num_of_results) {
       return riders;
     }
 
-    /* Hvis rytteren blev fundet, og han endnu ikke er i rider arrayet, tilføjes han */
-    else if (check_index != -1 && strcmp(riders[check_index].full_name, temp_name) != 0) {
-      addRider(riders, fP, check_index, riders_in_race_count, race_name, temp_name);
-    }
-
-    /* Ellers opdateres hans løbsresultater */
+    /* Hvis han er i listen, tilføjes han til rider arrayet */
     else {
-      updateRider(riders, fP, check_index, riders_in_race_count, race_name);
+      addRider(riders, fP, check_index, riders_in_race_count, race_name, temp_name);
     }
   }
 
@@ -451,12 +445,13 @@ int binaryMatchRiderName(const char *temp_name, const name_sc *names_list, const
 void addRider(rider_info_sc *riders, FILE *fP, const int check_index, races_sc riders_in_race_count, const char *race_name, const char *temp_name) {
   char position[MAX_ABREV_LEN];
   char time[MAX_TIME_LEN];
-
   int race_index = 0;
 
-  /* Det fulde navn bliver overført */
-  strcpy(riders[check_index].full_name, temp_name);
-  findSurname(riders[check_index].full_name, riders[check_index].surname);
+  /* Hvis rytteren ikke allerede er på listen, tilføjes hans navn */
+  if (strcmp(riders[check_index].full_name, temp_name) != 0) {
+    strcpy(riders[check_index].full_name, temp_name);
+    findSurname(riders[check_index].full_name, riders[check_index].surname);
+  }
 
   /* Resten af informationerne indsamles */
   fscanf(fP, " | %lf %3s %3s | %[A-Z0-9] %[-0-9:]",
@@ -474,28 +469,6 @@ void addRider(rider_info_sc *riders, FILE *fP, const int check_index, races_sc r
   riders[check_index].result[race_index].seconds  = calculateTime(time);
   riders[check_index].result[race_index].position = calculatePosition(position);
   riders[check_index].result[race_index].points   = calculatePoints(riders[check_index].result[race_index].position, riders_in_race_count, race_name);
-  riders[check_index].points_sum = riders[check_index].result[race_index].points;
-}
-
-/* Opdaterer en rytters informationer */
-void updateRider(rider_info_sc *riders, FILE *fP, const int check_index, races_sc riders_in_race_count, const char *race_name) {
-  char position[MAX_ABREV_LEN];
-  char time[MAX_TIME_LEN];
-  char dump[MAX_NAME_LEN];
-
-  int race_index = 0;
-
-  fscanf(fP, " | %2s %3s %3s | %[A-Z0-9] %[-0-9:]",
-         dump, dump, dump, position, time);
-
-  /* Finder det sted i rytterens result array, hvor løbsresultaterne skal indsættes */
-  race_index = findRaceIndex(race_name);
-  /* Indsætter løbsresultater */
-  strcpy(riders[check_index].result[race_index].race, race_name);
-  strcpy(riders[check_index].result[race_index].time_str, time);
-  riders[check_index].result[race_index].seconds  += calculateTime(time);
-  riders[check_index].result[race_index].position += calculatePosition(position);
-  riders[check_index].result[race_index].points   += calculatePoints(riders[check_index].result[race_index].position, riders_in_race_count, race_name);
   riders[check_index].points_sum += riders[check_index].result[race_index].points;
 }
 
