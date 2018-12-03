@@ -62,8 +62,8 @@ typedef struct {
 enum final_position {OTL = VERY_BIG_NUMBER, DNF};
 
 /* Prototyper */
-int printAll(FILE *);
-int menu(FILE *);
+int printAll(rider_info_sc *, const int, const int);
+int menu(rider_info_sc *, const int, const int);
 int findNumResults(FILE *);
 rider_info_sc *createArrayRiders(FILE *, const int);
 int findRiders(FILE *, const int, name_sc *);
@@ -98,108 +98,88 @@ int positionChecker(const rider_info_sc *, const int);
 
 int main(int argc, char *argv[]) {
   FILE *fP;
+  rider_info_sc *riders;
+  name_sc *name_dump;
+  int num_of_results = 0;
+  int rider_amount = 0;
 
   /* Åbner filen */
   fP = fopen("cykelloeb", "r");
 
   /* Checker om filen blev åbnet */
   if (fP == NULL) {
-    perror("Error when opening file");
+    perror("Der opstod en fejl ved læsning af filen");
     return -1;
   }
 
+  /* Finder antallet af resultater */
+  num_of_results = findNumResults(fP);
+
+  /* Laver et array af ryttere */
+  riders = createArrayRiders(fP, num_of_results);
+
+  /* Allokerer plads til et array der kan smides væk,
+   * finder antallet af individuelle ryttere */
+  name_dump = malloc(num_of_results * sizeof(name_sc));
+  rider_amount = findRiders(fP, num_of_results, name_dump);
+
   /* Hvis programparametre "--print" blev brugt, printes alle resultater med det samme */
   if (argc == 2 && strcmp(argv[1], "--print") == 0) {
-    printAll(fP);
+    printAll(riders, num_of_results, rider_amount);
   }
   else {
-    menu(fP);
+    menu(riders, num_of_results, rider_amount);
   }
 
+  /* Frigiver hukommelse fra results arrayet, og lukker filpointeren fP */
+  free(riders);
+  free(name_dump);
   fclose(fP);
   return 0;
 }
 
 /* Printer alle resultater */
-int printAll(FILE *fP) {
-  int num_of_results = 0;
-  int rider_amount = 0;
-  int nation_rider_amount = 0;
-  rider_info_sc *riders;
+int printAll(rider_info_sc *riders, const int num_of_results, const int rider_amount) {
   rider_info_sc *danish_riders;
-  name_sc *name_dump;
+  int nation_rider_amount = 0;
   char fast_rider_time[MAX_TIME_LEN];
   char fast_rider[2 * MAX_NAME_LEN];
-
-  /* Finder antallet af resultater */
-  num_of_results = findNumResults(fP);
-
-  /* Laver et array af ryttere */
-  riders = createArrayRiders(fP, num_of_results);
-
-
-  /* Allokerer plads til et array der kan smides væk,
-   * finder antallet af individuelle ryttere */
-  name_dump = malloc(num_of_results * sizeof(name_sc));
-  rider_amount = findRiders(fP, num_of_results, name_dump);
-
 
   /* Printer alle løbsresultater hvor rytteren er italiensk og over 30 år gammel */
   printf("Italienere over 30: \n");
   printRiders(riders, rider_amount, "ITA", 30);
-  printf("\n\n");
+  printf("\n# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n\n");
 
   /* Laver et array af danske ryttere, der har en position */
   danish_riders = createArrayRidersOfNation(riders, rider_amount, "DEN", &nation_rider_amount);
   printf("Danskere der har deltaget i et løb: \n");
   printRiders(danish_riders, nation_rider_amount, "DEN", 0);
-  printf("\n\n");
+  printf("\n# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n\n");
 
   /* Finder og printer de ti spillere der har fået flest point */
   printf("Top ti ryttere: \n");
   findTopTen(riders, rider_amount);
-  printf("\n\n");
+  printf("\n# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n\n");
 
   /* Finder den rytter der har den mindste køretid i Paris Roubaix og Amstel Gold Race */
   findFastestRider(riders, rider_amount, fast_rider, fast_rider_time);
   printFastestRider(fast_rider, fast_rider_time);
-  printf("\n\n");
+  printf("\n# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n\n");
 
   /* Finder gennemsnitsalderen af alle de ryttere der har opnået en top-ti plads i et eller flere løb */
   printf("Gennemsnitsalderen for ryttere med en top-ti plads er %0.4lf\n", calculateAvgAge(riders, rider_amount));
-  printf("\n\n");
-
-  /* Frigiver hukommelse fra results arrayet, og lukker filpointeren fP */
-  free(riders);
-  free(name_dump);
+  printf("\n# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n\n");
 
   return 0;
 }
 
 /* En menu, så brugeren selv kan vælge hvad der skal udregnes og printes */
-int menu(FILE *fP) {
-
-  int num_of_results = 0;
-  int rider_amount = 0;
-  int nation_rider_amount = 0;
-  rider_info_sc *riders;
+int menu(rider_info_sc *riders, const int num_of_results, const int rider_amount) {
   rider_info_sc *danish_riders;
-  name_sc *name_dump;
   char fast_rider_time[MAX_TIME_LEN];
   char fast_rider[2 * MAX_NAME_LEN];
   int choice = 0;
-
-  /* Finder antallet af resultater */
-  num_of_results = findNumResults(fP);
-
-  /* Laver et array af ryttere */
-  riders = createArrayRiders(fP, num_of_results);
-
-
-  /* Allokerer plads til et array der kan smides væk,
-   * finder antallet af individuelle ryttere */
-  name_dump = malloc(num_of_results * sizeof(name_sc));
-  rider_amount = findRiders(fP, num_of_results, name_dump);
+  int nation_rider_amount = 0;
 
   printf("\n####################  MENU  ####################\n\n");
   printf("Vælg en opgave: \n");
@@ -257,12 +237,7 @@ int menu(FILE *fP) {
     printf("Ugyldigt indput\n");
   }
 
-  rewind(fP);
-  menu(fP);
-
-  /* Frigiver hukommelse fra results arrayet, og lukker filpointeren fP */
-  free(riders);
-  free(name_dump);
+  menu(riders, num_of_results, rider_amount);
 
   return 0;
 }
