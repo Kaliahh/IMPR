@@ -68,7 +68,7 @@ int findNumResults(FILE *);
 rider_info_sc *createArrayRiders(FILE *, const int);
 int findRiders(FILE *, const int, name_sc *);
 int checkRider(const name_sc *, const char *, const int);
-int qCompNames(const void *a, const void *b);
+int qCompNames(const void *, const void *);
 races_sc raceCount(FILE *);
 int binaryMatchRiderName(const char *, const name_sc *, const int, const int);
 void addRider(rider_info_sc *, FILE *, const int, races_sc, const char *, const char *);
@@ -86,7 +86,7 @@ rider_info_sc *createArrayRidersOfNation(const rider_info_sc *, const int, const
 int countRidersOfNation(const rider_info_sc *, const int, const char *);
 /* Opgave 3 */
 void findTopTen(rider_info_sc *, const int);
-int qCompAvg(const void *a, const void *b);
+int qCompAvg(const void *, const void *);
 /* Opgave 4 */
 void findFastestRider(const rider_info_sc *, const int, char *, char *);
 void printFastestRider(const char *, const char *);
@@ -577,14 +577,17 @@ int calculatePoints(const int position, const races_sc riders_in_race_count, con
 void printRiders(const rider_info_sc *riders, const int rider_amount, const char *nation, const double age) {
   int rider_index = 0;
   int race_index = 0;
+  int num_of_races = 0;
 
   for (rider_index = 0; rider_index < rider_amount; rider_index++) {
     if (strcmp(riders[rider_index].nation, nation) == 0 && riders[rider_index].age > age) {
+      num_of_races = 0;
       printf("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n\n");
       printf("Navn: %-30s\n", riders[rider_index].full_name);
       /* Checker om rytteren har deltaget i hver løb, og om hans position var over eller under OTL */
       for (race_index = 0; race_index < NUM_OF_RACES; race_index++) {
         if (isupper(riders[rider_index].result[race_index].race[0]) != 0 && riders[rider_index].result[race_index].position < OTL) {
+          num_of_races++;
           printf("%-25s | Points: %2d | Position: %3d | Tid: %s\n",
                  riders[rider_index].result[race_index].race,
                  riders[rider_index].result[race_index].points,
@@ -600,6 +603,7 @@ void printRiders(const rider_info_sc *riders, const int rider_amount, const char
                  riders[rider_index].result[race_index].time_str);
         }
       }
+      printf("Antal løb med en position i alt: %d\n", num_of_races);
     }
   }
 }
