@@ -1,7 +1,7 @@
-// Ane Søgaard Jørgensen
+// Ane Sï¿½gaard Jï¿½rgensen
 // 09/09-2018
 // Afleveringsopgave i IMPR til den 17/09-2018 12:00
-// Underviser: Kurt Nørmark
+// Underviser: Kurt Nï¿½rmark
 // Link til opgave: https://goo.gl/68PJhj
 
 // Konverterer et input i sekunder til uger, dage, timer, minutter og sekunder.
@@ -33,13 +33,18 @@ int main(void) {
   uger = t / 604800;
 
   
-  /* Udskriver det konverterede input til terminalen */
-  printf("%d uge(r), %2d dag(e), %2d time(r), %2d minut(ter) og %2d sekund(er)\n",
-	 uger,
-	 dage,
-	 timer,
-	 min,
-	 sek);
+  /* Udskriver det konverterede input til terminalen */  
+   printf("%d uge%s, %2d dag%s, %2d time%s, %2d minut%s og %2d sekund%s\n",
+   uger, 
+   (uger == 1) ? "" : "r",
+   dage,
+   (dage == 1) ? "" : "e",
+   timer,
+   (timer == 1) ? "" : "r",
+   min,
+   (min == 1) ? "" : "ter",
+   sek,
+   (sek == 1) ? "" : "er");
   
   
   return 0;
@@ -51,20 +56,20 @@ int main(void) {
 
 /*   Forklaring til konvertering:
 
-     Den første er sekunder. Man kan teste det ved at sige 61 % 60 = 1, og 59 % 60 = 59.
+     Den fï¿½rste er sekunder. Man kan teste det ved at sige 61 % 60 = 1, og 59 % 60 = 59.
 
-     Den næste er minutter. Der er 3600 sekunder i én time. 3600 / 60 = 60 minutter.
-     Så hvis t = 60. 60 % 3600 = 60. 60 / 60 = 1.
-     Det samme gælder t = 61. 61 % 3600 = 61. 61 / 60 = 1.
-     Nu kan vi se på nogle grænseværdier:
+     Den nï¿½ste er minutter. Der er 3600 sekunder i ï¿½n time. 3600 / 60 = 60 minutter.
+     Sï¿½ hvis t = 60. 60 % 3600 = 60. 60 / 60 = 1.
+     Det samme gï¿½lder t = 61. 61 % 3600 = 61. 61 / 60 = 1.
+     Nu kan vi se pï¿½ nogle grï¿½nsevï¿½rdier:
      t = 3599. 3599 % 3600 = 3599. 3599 / 60 = 59.
      t = 3600. 3600 % 3600 = 0. 0 / 60 = 0.
      t = 3660. 3660 % 3600 = 60. 60 / 60 = 1.
      osv.
 
-     For både timer og dage, gælder det samme princip. For timer er det bare i forhold til dage,
-     og for dage er det i forhold til uger, med 23 timer og 6 dage som det højeste de kan vise.
+     For bï¿½de timer og dage, gï¿½lder det samme princip. For timer er det bare i forhold til dage,
+     og for dage er det i forhold til uger, med 23 timer og 6 dage som det hï¿½jeste de kan vise.
 
-     Uger er lidt speciel, fordi den skal ikke resettes (medmindre man gerne vil have år på).
-     Den tæller bare op som den skal. 
+     Uger er lidt speciel, fordi den skal ikke resettes (medmindre man gerne vil have ï¿½r pï¿½).
+     Den tï¿½ller bare op som den skal. 
 */
